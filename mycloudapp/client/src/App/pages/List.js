@@ -22,7 +22,7 @@ class List extends Component {
 //   }
 
   getList = async () => {
-    let listapi = await fetch('/api/getList');
+    let listapi = await fetch('/api/fileService');
     let list = await listapi.json();
     console.log(list);
     await this.setState({ list });

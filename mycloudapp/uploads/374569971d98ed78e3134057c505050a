@@ -1,0 +1,71 @@
+import operator
+from functools import reduce
+
+DAT_FILE = "b_lovely_landscapes.txt"
+
+nimage = lambda x: x[0]
+orientation = lambda x: x[1][0]
+ntags = lambda x: x[1][1]
+tags = lambda x: x[1][2]
+
+def read_file(dat_file):
+    with open(dat_file, 'r') as f:
+        N = f.readline().strip()
+        fnt = lambda x: (x[0], int(x[1]), set(x[2:]))
+        data = map(lambda x: (str(x[0]), fnt(x[1].strip().split(' '))),
+                   enumerate(f.readlines(), start=1))
+    return {'N' : N, 'data': list(data)}
+
+def combine_vert(img1, img2):
+    assert(orientation(img1) == 'V' and orientation(img2) == 'V')
+    newt = tags(img1).union(tags(img2))
+    return (nimage(img1) + ' ' + nimage(img2), ('H', len(newt), newt))
+
+
+
+def score(img1, img2):
+    t1 = tags(img1)
+    t2 = tags(img2)
+    lens = map(len, [t1.intersection(t2), t1 - t2, t2 - t1])
+    return min(*lens)
+
+def get_all_tags(data):
+    s = tags(data[0])
+    return s.union(*(map(tags, data[1:])))
+
+
+# def solve(N, data):
+#     slideshow = []
+#     all_tags = get_all_tags(data)
+#     choice = data[0]
+#     covered = all_tags - choice
+#     for i in data:
+        
+    
+def solve(N, data):
+    # score all, sort, choose max.  Don't concern yourself with V images now.
+    slideshow = []
+    sd = list(sorted(data, key=lambda x: len(tags(x)), reverse=True))
+    first = sd.pop(0)
+    slideshow.append(first)
+    s = 100000
+    tot = 0
+    while s > 0 or sd == []:
+        choice = max(map(lambda x: (x, score(first, x)), sd),
+            key=operator.itemgetter(1))
+        first = choice[0]
+        sd.pop(int(nimage(choice[0]))-1)
+        s = choice[1]
+        tot += s
+        print(tot)
+        slideshow.append(choice[0])
+    return slideshow, tot
+
+if __name__ == "__main__":
+    d = read_file(DAT_FILE)
+    img1 = d['data'][3]
+    img2 = d['data'][4]
+    print(score(img1, img2))
+
+
+    # second = max(map(lambda x: (x, score(first, x)), sd[1:]), key=operator.itemgetter(1))
