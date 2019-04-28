@@ -3,11 +3,34 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@coreui/coreui": "^2.1.9",
+    "@coreui/coreui-plugin-chartjs-custom-tooltips": "^1.2.0",
+    "@coreui/icons": "0.3.0",
+    "@coreui/react": "~2.1.5",
     "antd": "^3.16.2",
+    "bootstrap": "^4.3.1",
+    "chart.js": "^2.8.0",
+    "classnames": "^2.2.6",
+    "core-js": "^2.6.5",
+    "enzyme": "^3.9.0",
+    "enzyme-adapter-react-16": "^1.11.2",
+    "flag-icon-css": "^3.3.0",
+    "font-awesome": "^4.7.0",
+    "node-sass": "^4.12.0",
+    "prop-types": "^15.7.2",
     "react": "^16.8.6",
+    "react-app-polyfill": "^0.2.2",
+    "react-chartjs-2": "^2.7.4",
     "react-dom": "^16.8.6",
+    "react-router-config": "^4.4.0-beta.8",
     "react-router-dom": "^5.0.0",
-    "react-scripts": "2.1.8"
+    "react-scripts": "2.1.8",
+    "react-test-renderer": "^16.8.5",
+    "reactstrap": "^7.1.0",
+    "simple-line-icons": "^2.4.1"
+  },
+  "devDependencies": {
+    "react-scripts": "^2.1.8"
   },
   "scripts": {
     "start": "react-scripts start",
