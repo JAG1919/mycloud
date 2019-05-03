@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Link } from 'react-router-dom';
 
 class List extends Component {
   // Initialize the state
@@ -34,6 +35,11 @@ class List extends Component {
 
     return (
       <div className="App">
+        <Link to='/'>
+          <button variant="raised">
+              My List
+          </button>
+        </Link>
         <h1>List of Items</h1>
         {/* Check to see if any items are found*/}
         {list.length ? (

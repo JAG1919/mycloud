@@ -2,6 +2,7 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require("body-parser");
 const configRoutes = require("./routes");
+const cors = require("cors")
 
 const app = express();
 
@@ -9,6 +10,8 @@ const app = express();
 app.use(express.static(path.join(__dirname, 'client/build')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
+
+app.use(cors())
 
 // An api endpoint that returns a short list of items
 // app.get('/api/getList', (req,res) => {
