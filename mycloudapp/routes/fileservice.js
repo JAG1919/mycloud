@@ -22,4 +22,7 @@ router.get('*', (req,res) =>{
     res.sendFile(path.join(__dirname+'/client/build/index.html'));
 });
 
+let asdf="hi";
+let asdf1 = `asdf is ${asdf}`;
+
 module.exports = router;
