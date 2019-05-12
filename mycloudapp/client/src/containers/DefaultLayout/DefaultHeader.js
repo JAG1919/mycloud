@@ -3,15 +3,20 @@ import {  NavLink } from 'react-router-dom';
 import {  Nav, NavItem } from 'reactstrap';
 import PropTypes from 'prop-types';
 
-import {  AppNavbarBrand, AppSidebarToggler } from '@coreui/react';
+import {AppNavbarBrand, AppSidebarToggler} from '@coreui/react';
 import logo from '../../assets/img/brand/favicon.png'
 import sygnet from '../../assets/img/brand/MyCloud_logo.png'
 
 import { Button, } from 'reactstrap';
+import firebase from '../../config/firebase';
 
 const propTypes = {
   children: PropTypes.node,
 };
+
+const logOutUser = () => {
+  firebase.auth().signOut();
+ };
 
 const defaultProps = {};
 
@@ -33,15 +38,21 @@ class DefaultHeader extends Component {
         <Nav className="d-md-down-none" navbar>
 
          
+        {this.props.authenticated ? (
           <NavItem className="px-4">
-
-            <NavLink block to="/login">
-            <Button block color="primary" className="px-4">Login</Button>
+            <NavLink block to="/logout" >
+            <Button block color="primary" onClick={logOutUser} className="px-4">Logout</Button>
             </NavLink>
           </NavItem>
-        </Nav>
-        
+        ):(
+          <NavItem className="px-4">
+          <NavLink block to="/login" >
+          <Button block color="primary" className="px-4">Login</Button>
+          </NavLink>
+        </NavItem>
        
+        )}
+        </Nav>
       </React.Fragment>
     );
   }

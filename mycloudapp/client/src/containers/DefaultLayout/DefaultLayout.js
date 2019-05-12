@@ -18,9 +18,23 @@ import routes from '../../routes';
 import DefaultFooter from './DefaultFooter';
 import DefaultHeader from './DefaultHeader';
 import Home from '../../pages/Home';
+import firebase from '../../config/firebase';
 
 class DefaultLayout extends Component {
-
+  state = {
+    authenticated: false,
+  };
+  componentDidMount(){
+    firebase.auth().onAuthStateChanged((authenticated) => {
+      authenticated
+        ? this.setState(() => ({
+            authenticated: true,
+          }))
+        : this.setState(() => ({
+            authenticated: false,
+          }));
+    });
+  }
   loading = () => <div className="animated fadeIn pt-1 text-center">Loading...</div>
 
   signOut(e) {
@@ -32,7 +46,7 @@ class DefaultLayout extends Component {
     return (
       <div className="app">
         <AppHeader>
-            <DefaultHeader />
+            < DefaultHeader authenticated={this.state.authenticated} />
             </AppHeader>
         <div className="app-body">
        

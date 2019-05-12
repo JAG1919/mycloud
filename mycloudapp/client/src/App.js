@@ -1,32 +1,3 @@
-// import React, { Component } from 'react';
-// import logo from './logo.svg';
-// import './App.css';
-
-// class App extends Component {
-//   render() {
-//     return (
-//       <div className="App">
-//         <header className="App-header">
-//           <img src={logo} className="App-logo" alt="logo" />
-//           <p>
-//             Edit <code>src/App.js</code> and save to reload.
-//           </p>
-//           <a
-//             className="App-link"
-//             href="https://reactjs.org"
-//             target="_blank"
-//             rel="noopener noreferrer"
-//           >
-//             Learn React
-//           </a>
-//         </header>
-//       </div>
-//     );
-//   }
-// }
-
-// export default App;
-
 import React, { Component } from 'react';
 import { Route, Switch } from 'react-router-dom';
 import DefaultLayout from './containers/DefaultLayout';
@@ -36,7 +7,8 @@ import Register from './views/Pages/Register';
 import Page404 from './views/Pages/Page404';
 import Page500 from'./views/Pages/Page500';
 import List from './pages/List';
-
+// import firebase from '../src/config/firebase';
+// import Navigation from './pages/Navigation'
 // import { renderRoutes } from 'react-router-config';
 import './App.scss';
 
@@ -44,7 +16,25 @@ const loading = () => <div className="animated fadeIn pt-3 text-center">Loading.
 
 
 class App extends Component {
-  render() {
+  // state = {
+  //   authenticated: false,
+  // };
+  // componentDidMount() {
+  //   firebase.auth().onAuthStateChanged((authenticated) => {
+  //     authenticated
+  //       ? this.setState(() => ({
+  //           authenticated: true,
+  //         }))
+  //       : this.setState(() => ({
+  //           authenticated: false,
+  //         }));
+  //   });
+  // }
+
+   render() {
+
+  //   return <Navigation authenticated={this.state.authenticated} />;
+
     const App = () => (
       <div>
         <Switch>

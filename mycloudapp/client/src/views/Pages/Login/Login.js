@@ -1,9 +1,32 @@
 import React, { Component } from 'react';
-import { Link,NavLink } from 'react-router-dom';
-import { Button, Card, CardBody, CardGroup, Col, Container, Form, Input, InputGroup, InputGroupAddon, InputGroupText, Row } from 'reactstrap';
+import { Link, NavLink } from 'react-router-dom';
+import { Button, Card, CardBody, CardGroup, Col, Container, Form, Input, InputGroup, InputGroupAddon, InputGroupText, Row,Alert } from 'reactstrap';
+import firebase from '../../../config/firebase';
 
 class Login extends Component {
+  state = {
+    email: '',
+    password: '',
+    error: null,
+  };
+  handleInputChange = (event) => {
+    this.setState({ [event.target.name]: event.target.value });
+  };
+  handleSubmit = (event) => {
+    event.preventDefault();
+    const { email, password } = this.state;
+    firebase
+      .auth()
+      .signInWithEmailAndPassword(email, password)
+      .then((user) => {
+        this.props.history.push('/');
+      })
+      .catch((error) => {
+        this.setState({ error: error });
+      });
+  };
   render() {
+    const { email, password, error } = this.state;
     return (
       <div className="app flex-row align-items-center">
         <Container>
@@ -12,38 +35,44 @@ class Login extends Component {
               <CardGroup>
                 <Card className="p-4">
                   <CardBody>
-                    <Form>
+                    <Form onSubmit={this.handleSubmit}>
                       <h1>Login</h1>
                       <p className="text-muted">Sign In to your account</p>
+
+                      {error ? (
+                         <Alert color="danger">{error.message}</Alert>
+                      ) : null}
+
                       <InputGroup className="mb-3">
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
                             <i className="icon-user"></i>
                           </InputGroupText>
                         </InputGroupAddon>
-                        <Input type="text" placeholder="Username" autoComplete="username" />
+                      
+
+                        <Input type="text" placeholder="Email" autoComplete="email" name="email" value={email} onChange={this.handleInputChange} />
                       </InputGroup>
-                      <InputGroup className="mb-4">
+                      <InputGroup className="mb-3">
                         <InputGroupAddon addonType="prepend">
                           <InputGroupText>
                             <i className="icon-lock"></i>
                           </InputGroupText>
                         </InputGroupAddon>
-                        <Input type="password" placeholder="Password" autoComplete="current-password" />
+
+
+                        <Input type="password" placeholder="Password" autoComplete="current-password" name="password" value={password} onChange={this.handleInputChange} />
                       </InputGroup>
                       <Row>
                         <Col xs="6">
                           <Button color="primary" className="px-4">Login</Button>
                         </Col>
                         <Col xs="6" className="text-right">
-                        <NavLink to="/">
-                          <Button color="dark" className="px-3">Cancel</Button>
+                          <NavLink to="/">
+                            <Button color="dark" className="px-3">Cancel</Button>
                           </NavLink>
                         </Col>
-                      
-                        {/* <Col xs="6" className="text-right">
-                          <Button color="link" className="px-0">Forgot password?</Button>
-                        </Col> */}
+
                       </Row>
                     </Form>
                   </CardBody>
