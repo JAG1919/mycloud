@@ -22,7 +22,10 @@
 .App-link {
   color: #61dafb;
 }
-
+.Slider-img{
+width: 80%;
+height: 70%;
+}
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
@@ -30,4 +33,8 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+.img{
+
 }

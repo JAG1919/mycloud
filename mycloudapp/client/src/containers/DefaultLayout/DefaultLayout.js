@@ -19,6 +19,7 @@ import DefaultFooter from './DefaultFooter';
 import DefaultHeader from './DefaultHeader';
 import Home from '../../pages/Home';
 import firebase from '../../config/firebase';
+import Slider from '../../pages/Slider';
 
 class DefaultLayout extends Component {
   state = {
@@ -52,7 +53,8 @@ class DefaultLayout extends Component {
        
           <main className="main">
           <div className="homecontent">
-         <Home/>
+         {/* <Home/> */}
+         <Slider/>
          </div>
           </main>
          
