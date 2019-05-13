@@ -1,0 +1,35 @@
+{
+    "root1": {
+        "id": 1,
+        "filename": "file1",
+        "childern2": [11,22,33],
+        "parent": ""
+    },
+    "root2": {
+        "id": 2,
+        "filename": "file2",
+        "childern": [],
+        "parent": ""
+    },
+    "child1":{
+        "id": 11,
+        "filename": "child1.txt",
+        "childern": {
+        },
+        "parent": "root1"
+    },
+    "child2":{
+        "id": 12,
+        "filename": "child2.txt",
+        "childern": {
+        },
+        "parent": "root1"
+    },
+    "child3":{
+        "id": 13,
+        "filename": "child3.txt",
+        "childern": {
+        },
+        "parent": "root1"
+    }
+}
