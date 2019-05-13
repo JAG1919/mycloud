@@ -246,17 +246,17 @@ class UploadFiles extends React.Component {
         return (
             <div style={{  position: 'absolute',
         
-            top: '10%',
+            top: '15%',
             right: 220,
-    
-            left: 50,
+            height:170,
+            left: 150,
             textAlign: 'center',
             color: 'grey',
             fontSize: 36, border: 'dashed grey 4px',
             backgroundColor: 'rgba(255,255,255,.8)',
            
             }}>                      
-                <Upload {...this.uploaderProps} ref="inner"><a>Drop here</a></Upload>
+                <Upload {...this.uploaderProps} ref="inner"><a>Drop here :)</a></Upload>
             </div>);
     }
 }

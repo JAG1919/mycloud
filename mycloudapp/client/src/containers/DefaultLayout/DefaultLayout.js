@@ -38,10 +38,10 @@ class DefaultLayout extends Component {
   }
   loading = () => <div className="animated fadeIn pt-1 text-center">Loading...</div>
 
-  signOut(e) {
-    e.preventDefault()
-    this.props.history.push('/login')
-  }
+  // signOut(e) {
+  //   e.preventDefault()
+  //   this.props.history.push('/login')
+  // }
 
   render() {
     return (
@@ -51,12 +51,12 @@ class DefaultLayout extends Component {
             </AppHeader>
         <div className="app-body">
        
-          <main className="main">
+          {/* <main className="main">
           <div className="homecontent">
-         {/* <Home/> */}
+         <Home/>
          <Slider/>
          </div>
-          </main>
+          </main> */}
          
         </div>
         <AppFooter>
