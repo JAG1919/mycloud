@@ -83,6 +83,13 @@ import ReactDOM from 'react-dom';
 import Upload from 'rc-upload';
 import axios from 'axios';
 
+const style = {
+    height: "500px",
+    width: "500px",
+    border: "3px solid black",
+    display: "inline-block"
+}
+
 class UploadFiles extends React.Component {
     constructor(props) {
         super(props);
@@ -244,8 +251,8 @@ class UploadFiles extends React.Component {
     //method="post" encType="multipart/form-data" webkitdirectory="" directory="" onSubmit={this.onFormSubmit}
     render() {
         return (
-            <div style={{ margin: 100, }}>                      
-                <Upload {...this.uploaderProps} ref="inner"><a>Drop here(1)</a></Upload>
+            <div>                      
+                <Upload {...this.uploaderProps} ref="inner"><a style={style}>Drop here(1)</a></Upload>
             </div>);
     }
 }
