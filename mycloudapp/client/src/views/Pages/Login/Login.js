@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link, NavLink } from 'react-router-dom';
-import { Button, Card, CardBody, CardGroup, Col, Container, Form, Input, InputGroup, InputGroupAddon, InputGroupText, Row,Alert } from 'reactstrap';
+import { Button, Card, CardBody, CardGroup, Col, Container, Form, Input, InputGroup, InputGroupAddon, InputGroupText, Row, Alert } from 'reactstrap';
 import firebase from '../../../config/firebase';
 
 class Login extends Component {
@@ -19,7 +19,7 @@ class Login extends Component {
       .auth()
       .signInWithEmailAndPassword(email, password)
       .then((user) => {
-        this.props.history.push('/');
+        this.props.history.push('/dashboard');
       })
       .catch((error) => {
         this.setState({ error: error });
@@ -40,7 +40,7 @@ class Login extends Component {
                       <p className="text-muted">Sign In to your account</p>
 
                       {error ? (
-                         <Alert color="danger">{error.message}</Alert>
+                        <Alert color="danger">{error.message}</Alert>
                       ) : null}
 
                       <InputGroup className="mb-3">
@@ -49,7 +49,7 @@ class Login extends Component {
                             <i className="icon-user"></i>
                           </InputGroupText>
                         </InputGroupAddon>
-                      
+
 
                         <Input type="text" placeholder="Email" autoComplete="email" name="email" value={email} onChange={this.handleInputChange} />
                       </InputGroup>
