@@ -11,6 +11,7 @@ import List from './pages/List';
 // import Navigation from './pages/Navigation'
 // import { renderRoutes } from 'react-router-config';
 import './App.scss';
+import Dashboard from '../src/pages/Dashboard';
 
 const loading = () => <div className="animated fadeIn pt-3 text-center">Loading...</div>;
 
@@ -38,6 +39,7 @@ class App extends Component {
     const App = () => (
       <div>
         <Switch>
+        <Route path='/dashboard' component={Dashboard}/>
               <Route path='/list' component={List}/>
               <Route  path="/login" component = {Login} />
               <Route  path="/register" component = {Register}/>

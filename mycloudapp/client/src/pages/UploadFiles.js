@@ -244,8 +244,19 @@ class UploadFiles extends React.Component {
     //method="post" encType="multipart/form-data" webkitdirectory="" directory="" onSubmit={this.onFormSubmit}
     render() {
         return (
-            <div style={{ margin: 100, }}>                      
-                <Upload {...this.uploaderProps} ref="inner"><a>Drop here(1)</a></Upload>
+            <div style={{  position: 'absolute',
+        
+            top: '10%',
+            right: 220,
+    
+            left: 50,
+            textAlign: 'center',
+            color: 'grey',
+            fontSize: 36, border: 'dashed grey 4px',
+            backgroundColor: 'rgba(255,255,255,.8)',
+           
+            }}>                      
+                <Upload {...this.uploaderProps} ref="inner"><a>Drop here</a></Upload>
             </div>);
     }
 }

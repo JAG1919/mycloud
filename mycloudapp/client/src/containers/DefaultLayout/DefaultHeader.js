@@ -9,14 +9,11 @@ import sygnet from '../../assets/img/brand/MyCloud_logo.png'
 
 import { Button, } from 'reactstrap';
 import firebase from '../../config/firebase';
+import UserNavigation from '../../pages/UserNavigation';
 
 const propTypes = {
   children: PropTypes.node,
 };
-
-const logOutUser = () => {
-  firebase.auth().signOut();
- };
 
 const defaultProps = {};
 
@@ -39,11 +36,8 @@ class DefaultHeader extends Component {
 
          
         {this.props.authenticated ? (
-          <NavItem className="px-4">
-            <NavLink block to="/logout" >
-            <Button block color="primary" onClick={logOutUser} className="px-4">Logout</Button>
-            </NavLink>
-          </NavItem>
+          
+          <UserNavigation/>
         ):(
           <NavItem className="px-4">
           <NavLink block to="/login" >
@@ -52,6 +46,7 @@ class DefaultHeader extends Component {
         </NavItem>
        
         )}
+
         </Nav>
       </React.Fragment>
     );
