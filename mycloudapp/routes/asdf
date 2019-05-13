@@ -1,0 +1,16 @@
+#!/bin/bash
+
+file=../uploads/.git
+if [ -d "$file" ]; then
+    echo "File exists"
+    git -C "../uploads/" add .
+    git -C "../uploads/" commit -am "Upload"
+    git -C "../uploads/" push
+else 
+    echo "file does not exits1"
+    git -C "../uploads/" init
+    git -C "../uploads/" remote add origin https://github.com/JAG1919/filebackup.git
+    git -C "../uploads/" add .
+    git -C "../uploads/" commit -am "Upload"
+    git -C "../uploads/" push --set-upstream origin master
+fi 
