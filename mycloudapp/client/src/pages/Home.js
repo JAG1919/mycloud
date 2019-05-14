@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import Slider from './Slider';
+import Service from './Service';
 import DefaultHeader from '../containers/DefaultLayout/DefaultHeader';
 import DefaultFooter from '../containers/DefaultLayout/DefaultFooter';
 import firebase from '../config/firebase';
@@ -43,6 +44,7 @@ class Home extends Component {
           </main> */}
          
         </div>
+        <div><Service/></div>
         <AppFooter>
             <DefaultFooter />
         </AppFooter>
