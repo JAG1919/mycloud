@@ -1,6 +1,5 @@
 const mongoCollections = require("../config/mongoCollections");
 const files= mongoCollections.files;
-const uuid = require("uuid");
 
 let exportedmethod ={
     async postfile(newfile,path,userid)
@@ -26,10 +25,6 @@ let exportedmethod ={
                     
                     f=1;
                     w = file.filename;
-                    if(file.parent!=a[i-1])
-                    {
-                        continue;
-                    }
                 }
                 else
                 {
@@ -39,9 +34,9 @@ let exportedmethod ={
                     {   
                         console.log("Others"); 
                         e[i]={
-                            id:uuid.v4(),
                             filename:a[i],
                             isdir:true,
+                            originalname:a[i],
                             children:[a[i+1]],
                             parent:a[i-1],
                             userId:userid
@@ -51,7 +46,6 @@ let exportedmethod ={
                     {
                         console.log("Last");
                         e[i]={
-                            id:newfile.id,
                             filename:newfile.filename,
                             originalname:newfile.originalname,
                             isdir:newfile.isdir,
@@ -65,9 +59,9 @@ let exportedmethod ={
                     {   
                         console.log("First");  
                          e[i]={
-                            id:uuid.v4(),
                             filename:a[i],
                             isdir:true,
+                            originalname:a[i],
                             children:[a[i+1]],
                             parent:"root",
                             userId:userid
@@ -82,7 +76,6 @@ let exportedmethod ={
         else
         {
             let er={
-                id:newfile.id,
                 filename:newfile.filename,
                 originalname:newfile.originalname,
                 isdir:newfile.isdir,
@@ -95,7 +88,8 @@ let exportedmethod ={
             let file = await fileCollection.findOne({ filename: "root", userId:userid});
             let r =file;
             console.log(r);
-            r.children.push(er.id);
+            if(r)
+                r.children.push(er.filename);
             let updateCommand = {
                 $set: r
             };
@@ -107,7 +101,7 @@ let exportedmethod ={
         if(f==1)
         {
             console.log("Here");
-            let file = await fileCollection.findOne({ filename: w});
+            let file = await fileCollection.findOne({ filename: w,userId:userid});
             let r =file;
             console.log(r);
             r.children.push(newfile.filename);
@@ -127,50 +121,102 @@ let exportedmethod ={
     {
         const fileCollection = await files();
         let newroot={
-            id:"rc-1",
             filename:"root",
             parent:null,
             userId:userId,
             children:[null]
         }
         let file = await fileCollection.insertOne(newroot);
-        console.log(file);
+        if(file)
+            return true;
+        else
+            return false;
     },
-    async fetchfile(userid,fileid)
+    async fetchfile(userid,filename)
     {
         const fileCollection = await files();
         console.log("I am there");
-        let file = await fileCollection.findOne( { id: fileid, userId:userid } );
+        let file = await fileCollection.findOne( { filename: filename, userId:userid } );
         console.log(file);
+        if(file.isdir==false)
+            throw "File Detacted, No children";
+        let a=[{}];
+        for(var i=0;i<file.children.length;i++)
+        {
+            let we = await fileCollection.findOne( { filename: file.children[i], userId:userid } );
+            a[i]={
+                id:we.filename,
+                originalname: we.originalname
+            }
+        }
         return file.children;
-    }
-   /* async movefile(fromid,toid,fileid)
+    },
+    async movefile(fromfilename,tofilename,filefilename,userid)
     {
-        let file = await fileCollection.findOne({id:fileid})
-        let file2 = await fileCollection.findOne({id:fromid})
-        let file3 = await fileCollection.findOne({id:toid})
-    }*/
+        let file = await fileCollection.findOne({filename:filefilename,userId:userid})
+        let file2 = await fileCollection.findOne({filename:fromfilename,userId:userid})
+        let file3 = await fileCollection.findOne({filename:tofilename,userId:userid})
+
+        let r = file;
+        r.parent=file3.filename;
+        let updateCommand = {
+            $set: r
+        };
+        const query = {
+            fileid:r.filename
+        };
+        await fileCollection.updateOne(query, updateCommand);
+
+        for( var i = 0; i < file2.children.length; i++){ 
+            if ( file2.children[i] === file.filename) {
+              file2.children.splice(i, 1); 
+            }
+         }
+         let updateCommand = {
+            $set: file2
+        };
+        const query = {
+            fileid:file2.filename
+        };
+        await fileCollection.updateOne(query, updateCommand);
+        r=file3;
+        file3.children.push(file.filename);
+        let updateCommand = {
+            $set: r
+        };
+        const query = {
+            fileid:r.filename
+        };
+        await fileCollection.updateOne(query, updateCommand);
+    },
+    async deletefile(filename,userid)
+    {
+        var f=true;
+        const fileCollection = await files();
+        const r=fileCollection.remove({filename:filename,userId:userid},true);
+        return r;
+    },
 }
 
 // exportedmethod.fetchfile(123,"DEF");
 
-newfile={
-    id:uuid.v4(),
-    fieldname:"file",
-    filename:"XYZ.txt",
-    originalname:"txw2.txt",
-    isdir:false,
-    children:[null],
-}
+// newfile={
+//     id:uuid.v4(),
+//     fieldname:"file",
+//     filename:"XYZ.txt",
+//     originalname:"txw2.txt",
+//     isdir:false,
+//     children:[null],
+// }
 
-newfile2={
-    id:uuid.v4(),
-    fieldname:"file",
-    filename:"XYZ3.txt",
-    originalname:"txw3.txt",
-    isdir:false,
-    children:[null],
-}
+// newfile2={
+//     id:uuid.v4(),
+//     fieldname:"file",
+//     filename:"XYZ3.txt",
+//     originalname:"txw3.txt",
+//     isdir:false,
+//     children:[null],
+// }
 
 // path="ABC/DEF/LMN/XYZ.txt";
 // exportedmethod.postfile(newfile,path,123);
@@ -178,4 +224,5 @@ newfile2={
 // exportedmethod.postfile(newfile2,path2,123);
 // path=""
 // exportedmethod.postfile(newfile2,path,123);
+
 module.exports = exportedmethod;

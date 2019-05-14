@@ -66,7 +66,7 @@ class UploadFiles extends React.Component {
             //     // this.refs.inner.abort(file);
             // },
             // onSuccess(file) {
-            //     // console.log('onSuccess', file);
+                // console.log('onSuccess', file);
             // },
             // onProgress(step, file) {
             //     // console.log('onProgress', Math.round(step.percent), file.name);

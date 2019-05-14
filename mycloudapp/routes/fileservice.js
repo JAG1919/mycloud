@@ -40,7 +40,11 @@ router.post("/file", upload.array('file'), versioncontrol, async (req, res) => {
     let fileName = req.body.fileName;
     let parent = req.body.parent;
     let children = req.body.children;
+    let file=req.body;
+    let path=req.body.relativePath;
+    let userid = req.body.userId;
     // then push to Redis Cache
+    let a = await files.postfile(file,path,userid)
     client.hmset(id,[
         "fileName",fileName,
         "parent", parent,
@@ -64,9 +68,19 @@ router.get("/files", async (req,res)=>{
 
     res.json(file);
 });
+
+router.post("/registerroot",async (req,res)=>{
+    let uid = req.body.uid;
+    let file = await files.makeroot(uid);
+    if(file)
+        res.sendStatus(200);
+    else
+        res.sendStatus(404);
+})
 // router.get('*', (req,res) =>{
 //     res.sendFile(path.join(__dirname+'/client/build/index.html'));
 // });
+
 
 let asdf="hi";
 let asdf1 = `asdf is ${asdf}`;
