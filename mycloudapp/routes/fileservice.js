@@ -3,30 +3,22 @@ const router = express.Router();
 const path = require('path');
 const multer = require('multer');
 const upload = multer({dest: '../uploads/'});
-// var exec = require('child_process').exec;
-const shell = require('shelljs');
+const files = require("../data/postfile")
+const shell = require("shelljs");
 const getRedis = require('../redis');
 
-let versioncontrol = (req,res,next) => {
-    // if (shell.exec('./routes/asdf').code !== 0) { 
-    //     shell.echo('Error: Git commit failed');
-    //     shell.exit(1);
-    // }
-    shell.exec('./routes/asdf', function(code, stdout, stderr) {
-        // console.log('Exit code:', code);
-        // console.log('Program output:', stdout);
-        // console.log('Program stderr:', stderr);
-      });
+let versioncontrol = (req,res,next)=>
+{
+    shell.exec('./routes/asdf', function(code,stdout,stderr){
+    });
     next();
 }
 
-router.get('/', async (req,res) => {
-    // connect to redis
+router.get('/', async (req,res)=>{
     let client = await getRedis();
     client.on('connect',(req,res)=>{
-        console.log('Redis Connected');
+        console.log("Redis Connected");
     })
-
     var list = ["item1", "item2", "item3"];
     res.json(list);
     // get list from Redis Cache
@@ -48,7 +40,11 @@ router.post("/file", upload.array('file'), versioncontrol, async (req, res) => {
     let fileName = req.body.fileName;
     let parent = req.body.parent;
     let children = req.body.children;
+    let file=req.body;
+    let path=req.body.relativePath;
+    let userid = req.body.userId;
     // then push to Redis Cache
+    let a = await files.postfile(file,path,userid)
     client.hmset(id,[
         "fileName",fileName,
         "parent", parent,
@@ -64,9 +60,27 @@ router.post("/file", upload.array('file'), versioncontrol, async (req, res) => {
     res.sendStatus(200)
   });
 
-router.get('*', (req,res) =>{
-    res.sendFile(path.join(__dirname+'/client/build/index.html'));
+router.get("/files", async (req,res)=>{
+    let fid=req.body.fileid;
+    let uid=req.body.userid;
+    console.log(fid);
+    let file = await files.fetchfile(uid,fid);
+
+    res.json(file);
 });
+
+router.post("/registerroot",async (req,res)=>{
+    let uid = req.body.uid;
+    let file = await files.makeroot(uid);
+    if(file)
+        res.sendStatus(200);
+    else
+        res.sendStatus(404);
+})
+// router.get('*', (req,res) =>{
+//     res.sendFile(path.join(__dirname+'/client/build/index.html'));
+// });
+
 
 let asdf="hi";
 let asdf1 = `asdf is ${asdf}`;

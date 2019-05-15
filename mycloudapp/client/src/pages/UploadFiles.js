@@ -87,6 +87,7 @@ class UploadFiles extends React.Component {
             //     Authorization: 'xxxxxxx',
             //   },
             directory: true,
+        
             onSuccess(result, file, xhr) {
                 file.a="assdf";
                 console.log(file);
@@ -112,6 +113,7 @@ class UploadFiles extends React.Component {
                 //     formData.append(key, data[key]);
                 //   });
                 // }
+                console.log("path",file.webkitRelativePath);
                 formData.append("relativePath", file['webkitRelativePath'])
                 formData.append(filename, file);
                 const res = await axios.post(`http://localhost:5000${action}`, formData)
@@ -127,7 +129,7 @@ class UploadFiles extends React.Component {
             //     // this.refs.inner.abort(file);
             // },
             // onSuccess(file) {
-            //     // console.log('onSuccess', file);
+                // console.log('onSuccess', file);
             // },
             // onProgress(step, file) {
             //     // console.log('onProgress', Math.round(step.percent), file.name);
