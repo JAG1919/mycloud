@@ -115,8 +115,10 @@ class UploadFiles extends React.Component {
                 // }
                 console.log("path",file.webkitRelativePath);
                 formData.append("relativePath", file['webkitRelativePath'])
+                formData.append("userid", 123)
                 formData.append(filename, file);
-                const res = await axios.post(`http://localhost:5000${action}`, formData)
+                console.log(file);
+                const res = await axios.post(`http://localhost:5000${action}`, formData);
                 console.log(res.status)
             }
             // beforeUpload(file) {
@@ -144,6 +146,23 @@ class UploadFiles extends React.Component {
         // this.state = {
         //     files: null
         // }
+    }
+    // filedata={
+    //     filename: "asdf",
+    //     userId: "asdf"
+    // }
+    // let res = await axios.get(`http://localhost:5000/api/fileService/files`,filedata)
+
+    componentDidMount = async () => {
+        let a =  await axios.post(`http://localhost:5000/api/fileService/registerroot`,"123")
+        let file={
+            filename:"root",
+            userid:"123"
+        }
+        let res =  await axios.get(`http://localhost:5000/api/fileService/files`,file)
+        this.setState({
+            files: res.children
+        })
     }
     
     drag = (ev) => {
@@ -174,15 +193,15 @@ class UploadFiles extends React.Component {
         // console.log("hi")
         return "return return false";
     }
-   
     render() {
-        let listoffiles = asdf.map(file => {
-            if (file.dir === true){
-                return(<label style={filelabel}><div style={filediv} data-id={file.id} key={file.id} draggable="true" onDragStart={this.drag} onDragOver={this.allowDrop} onDrop={this.drop} onClick={this.whenDirClicked}>{file.name}</div></label>);
+        
+        let listoffiles = this.state.files.map(file => {
+            if (file.isdir === true){
+                return(<label style={filelabel}><div style={filediv} draggable="true" onDragStart={this.drag} onDragOver={this.allowDrop} onDrop={this.drop} onClick={this.whenDirClicked}>{file}</div></label>);
             }
-            return (<label style={filelabel}><div style={filediv} data-id={file.id} key={file.id} draggable="true" onDragStart={this.drag}>{file.name}</div></label>);
+            return (<label style={filelabel}><div style={filediv}  draggable="true" onDragStart={this.drag}>{file}</div></label>);
         });
-
+        //data-id={file.id} key={file.id}
         return (
             <div style={allcontainer}>                      
                 <Upload {...this.uploaderProps} ref="inner"><a onClick={this.whenClicked} style={filedrop}>Drop Files and Directories Here</a></Upload>

@@ -33,16 +33,23 @@ router.post("/file", upload.array('file'), versioncontrol, async (req, res) => {
         console.log('Redis Connected');
     })
     const asdf = req.body;
-    console.log("req.body", JSON.stringify(req.body));
-    console.log(asdf)
+    // console.log("req.body", JSON.stringify(req.body));
+    console.log(req.body)
     // use variable to save req.body
-    let id = req.body.id;
-    let fileName = req.body.fileName;
-    let parent = req.body.parent;
-    let children = req.body.children;
+    
     let file=req.body;
-    let path=req.body.relativePath;
-    let userid = req.body.userId;
+    file={
+        isdir:false,
+        fileName : req.body.uid,
+        parent : null,
+        children: [null]
+    }
+    console.log("req  :", req.body.file);
+    console.log(file);
+    //let path=req.body.relativePath;
+    console.log(path);
+    let userid = req.body.userid;
+    console.log(userid);
     // then push to Redis Cache
     let a = await files.postfile(file,path,userid)
     client.hmset(id,[
@@ -65,8 +72,8 @@ router.get("/files", async (req,res)=>{
     let uid=req.body.userid;
     console.log(fid);
     let file = await files.fetchfile(uid,fid);
-
-    res.json(file);
+    console.log(file)
+;    res.json(file);
 });
 
 router.post("/registerroot",async (req,res)=>{
