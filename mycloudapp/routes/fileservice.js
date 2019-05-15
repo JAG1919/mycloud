@@ -69,6 +69,13 @@ router.get("/files", async (req,res)=>{
     res.json(file);
 });
 
+router.delete("/file", async (req,res)=>{
+    let uid = req.body.uid;
+    let filename = req.body.filename;
+
+    let file= await files.deletefile(filename,uid);
+})
+
 router.post("/registerroot",async (req,res)=>{
     let uid = req.body.uid;
     let file = await files.makeroot(uid);

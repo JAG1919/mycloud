@@ -149,7 +149,7 @@ let exportedmethod ={
                 originalname: we.originalname
             }
         }
-        return file.children;
+        return a[i];
     },
     async movefile(fromfilename,tofilename,filefilename,userid)
     {
