@@ -24,6 +24,7 @@
     "react-app-polyfill": "^0.2.2",
     "react-chartjs-2": "^2.7.4",
     "react-dom": "^16.8.6",
+    "react-file-icon": "^0.2.0",
     "react-router-config": "^4.4.0-beta.8",
     "react-router-dom": "^5.0.0",
     "react-scripts": "2.1.8",

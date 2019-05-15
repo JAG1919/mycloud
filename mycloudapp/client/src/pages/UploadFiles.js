@@ -2,20 +2,83 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Upload from 'rc-upload';
 import axios from 'axios';
+// import FileIcon, { defaultStyles } from 'react-file-icon';
 
-const style = {
-    height: "500px",
-    width: "500px",
-    display: "inline-block",
+const asdf = [
+    {
+        id: 1234,
+        name: "file1",
+        dir: false
+    },
+    {
+        id:5678,
+        name: "directory1",
+        dir: true,
+        children:[
+            {
+                id: 2345,
+                name: "file2",
+                dir: false
+            },
+            {
+                id: 3456,
+                name: "file3",
+                dir: false
+            }
+        ]
+    }
+]
+
+const filedrop = {
+    display:"inline-block",
+    height: "100px",
+    width: "300px",
     color: 'grey',
-    fontSize: 36,
-    border: 'dashed grey 4px',
+    fontSize: 21,
+    border: 'solid grey 4px',
+    backgroundColor: 'rgba(255,255,255,.8)',
+    "line-height": "75px",
+    "text-align": "center",
+    "margin-top": "20px",
+    "margin-bottom": "30px",
+    "border-style": "ridge"
+}
+
+const allcontainer = {
+    // "margin-left": "auto",
+    // "margin-right": "auto",
+    width: "100%",
+    "text-align": "center",
+    "background-color": "rgb(192,192,192)",
+}
+
+const filediv = {
+    height: "40px",
+    margin: "3px",
+    "background-color": "#1985ac",
+    "border-radius": "25px",
+    fontSize: "2em",
+    color: "white"
+}
+
+const filelabel = {
+    display: "block"
+}
+
+const itemcontainer = {
+    width: "700px",
+    height: "400px",
+    margin: "auto",
+    border: "3px solid #20a8d8",
     backgroundColor: 'rgba(255,255,255,.8)',
 }
 
 class UploadFiles extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            files:null,
+        }
         this.myRef = React.createRef();
         this.uploaderProps = {
             action: '/api/fileService/file',
@@ -82,24 +145,49 @@ class UploadFiles extends React.Component {
         //     files: null
         // }
     }
+    
+    drag = (ev) => {
+        console.log(ev.target)
+        ev.dataTransfer.setData("file", ev.target.dataset.id);
+    }
+
+    allowDrop = (ev) => {
+        ev.preventDefault();
+    }
+
+    drop = (ev) => {
+        ev.preventDefault();
+        var data = ev.dataTransfer.getData("file");
+        console.log(data)
+        console.log(ev.target.dataset.id)
+        // ev.target.appendChild(document.getElementById(data));
+    }
+
+    whenDirClicked = (e) => {
+        console.log(e);
+    }
 
     whenClicked = (e) => {
-        e.preventDefault();
-        // console.log(e);
-        // this.setState({files:e.target.files}, (e) => this.onFormSubmit(e));
-        //this.onFormSubmit(e);
-        // console.log(e.dataTransfer.getFilesAndDirectories());
-        // for (let x of e.target.files){
-        //     console.log(x);
-        // }
-        // console.log(this.state.files.length)
-        // this.submit();
+        // console.log("hi")
+        // e.preventDefault();
+        // e.disabled = true;
+        // console.log("hi")
+        return "return return false";
     }
    
     render() {
+        let listoffiles = asdf.map(file => {
+            if (file.dir === true){
+                return(<label style={filelabel}><div style={filediv} data-id={file.id} key={file.id} draggable="true" onDragStart={this.drag} onDragOver={this.allowDrop} onDrop={this.drop} onClick={this.whenDirClicked}>{file.name}</div></label>);
+            }
+            return (<label style={filelabel}><div style={filediv} data-id={file.id} key={file.id} draggable="true" onDragStart={this.drag}>{file.name}</div></label>);
+        });
+
         return (
-            <div style={style}>                      
-                <Upload {...this.uploaderProps} ref="inner"><a onClick="return false">Drop here :)</a></Upload>
+            <div style={allcontainer}>                      
+                <Upload {...this.uploaderProps} ref="inner"><a onClick={this.whenClicked} style={filedrop}>Drop Files and Directories Here</a></Upload>
+                <div style={itemcontainer}>{listoffiles}</div>
+                {/* <FileIcon extension="pdf" {...defaultStyles.pdf} /> */}
             </div>);
     }
 }
