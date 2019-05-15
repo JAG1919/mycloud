@@ -152,6 +152,18 @@ let exportedmethod ={
             // }
         // }
         return file;
+        if(file.isdir==false)
+            throw "File Detacted, No children";
+        let a=[{}];
+        for(var i=0;i<file.children.length;i++)
+        {
+            let we = await fileCollection.findOne( { filename: file.children[i], userId:userid } );
+            a[i]={
+                id:we.filename,
+                originalname: we.originalname
+            }
+        }
+        return a[i];
     },
     async movefile(fromfilename,tofilename,filefilename,userid)
     {
