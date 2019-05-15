@@ -115,6 +115,7 @@ class UploadFiles extends React.Component {
                 // }
                 console.log("path",file.webkitRelativePath);
                 formData.append("relativePath", file['webkitRelativePath'])
+                formData.append("userid", 123)
                 formData.append(filename, file);
                 const res = await axios.post(`http://localhost:5000${action}`, formData)
                 console.log(res.status)

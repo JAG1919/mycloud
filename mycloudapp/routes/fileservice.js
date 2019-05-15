@@ -61,9 +61,9 @@ router.post("/file", upload.array('file'), versioncontrol, async (req, res) => {
   });
 
 router.get("/files", async (req,res)=>{
-    let fid=req.body.fileid;
+    let fid=req.body.filename;
     let uid=req.body.userid;
-    console.log(fid);
+    console.log(req.body.relativePath);
     let file = await files.fetchfile(uid,fid);
 
     res.json(file);
@@ -74,7 +74,7 @@ router.delete("/file", async (req,res)=>{
     let filename = req.body.filename;
 
     let file= await files.deletefile(filename,uid);
-})
+});
 
 router.post("/registerroot",async (req,res)=>{
     let uid = req.body.uid;
@@ -83,7 +83,7 @@ router.post("/registerroot",async (req,res)=>{
         res.sendStatus(200);
     else
         res.sendStatus(404);
-})
+});
 // router.get('*', (req,res) =>{
 //     res.sendFile(path.join(__dirname+'/client/build/index.html'));
 // });
