@@ -26,42 +26,44 @@ router.get('/', async (req,res)=>{
     console.log('Sent list of items');
 });
 
-router.post("/file", upload.array('file'), versioncontrol, async (req, res) => {
+router.post("/file", upload.array('file'), async (req, res) => {
     // connect to redis
-    let client = await getRedis();
-    client.on('connect',(req,res)=>{
-        console.log('Redis Connected');
-    })
+    // let client = await getRedis();
+    // client.on('connect',(req,res)=>{
+    //     console.log('Redis Connected');
+    // })
+    
     const asdf = req.body;
     // console.log("req.body", JSON.stringify(req.body));
-    console.log(req.body)
+    console.log("body: ",req.body)
     // use variable to save req.body
     
-    let file=req.body;
-    file={
-        isdir:false,
-        fileName : req.body.uid,
-        parent : null,
-        children: [null]
-    }
-    console.log("req  :", req.body.file);
-    console.log(file);
+    // let file=req.body;
+    // file={
+    //     isdir:false,
+    //     fileName : req.body.uid,
+    //     parent : null,
+    //     children: [null]
+    // }
+
+    // console.log(req.body.file);
+    // console.log(file);
     //let path=req.body.relativePath;
-    console.log(path);
-    let userid = req.body.userid;
-    console.log(userid);
+    // console.log("path: ",path);
+    // let userid = req.body.userid;
+    // console.log("userid: ",userid);
     // then push to Redis Cache
-    let a = await files.postfile(file,path,userid)
-    client.hmset(id,[
-        "fileName",fileName,
-        "parent", parent,
-        "children", children
-    ],function(err,reply){
-        if(err){
-            console.log(err);
-        }
-        console.log(req.body)
-    })
+    // let a = await files.postfile(file,path,userid)
+    // client.hmset(id,[
+    //     "fileName",fileName,
+    //     "parent", parent,
+    //     "children", children
+    // ],function(err,reply){
+    //     if(err){
+    //         console.log(err);
+    //     }
+    //     // console.log(req.body)
+    // })
     // asdf[0].isdir = true;
     // console.log("request:", asdf);
     res.sendStatus(200)
