@@ -14,59 +14,37 @@ let versioncontrol = (req,res,next)=>
     next();
 }
 
-router.get('/', async (req,res)=>{
-    let client = await getRedis();
-    client.on('connect',(req,res)=>{
-        console.log("Redis Connected");
-    })
-    var list = ["item1", "item2", "item3"];
-    res.json(list);
-    // get list from Redis Cache
-    client.hgetall(list);
-    console.log('Sent list of items');
-});
 
-router.post("/file", upload.array('file'), versioncontrol, async (req, res) => {
+router.post("/file", upload.array('file'), versioncontrol, (req, res) => {
     // connect to redis
-    let client = await getRedis();
-    client.on('connect',(req,res)=>{
-        console.log('Redis Connected');
-    })
-    const asdf = req.body;
-    console.log("req.body", JSON.stringify(req.body));
-    console.log(asdf)
-    // use variable to save req.body
-    let id = req.body.id;
-    let fileName = req.body.fileName;
-    let parent = req.body.parent;
-    let children = req.body.children;
-    let file=req.body;
-    let path=req.body.relativePath;
-    let userid = req.body.userId;
-    // then push to Redis Cache
-    let a = await files.postfile(file,path,userid)
-    client.hmset(id,[
-        "fileName",fileName,
-        "parent", parent,
-        "children", children
-    ],function(err,reply){
-        if(err){
-            console.log(err);
-        }
-        console.log(req.body)
-    })
-    // asdf[0].isdir = true;
-    // console.log("request:", asdf);
-    res.sendStatus(200)
+    // let client = await getRedis();
+    // client.on('connect',(req,res)=>{
+    //     console.log('Redis Connected');
+    // })
+    // const asdf = req.body;
+    // console.log("req.body", JSON.stringify(req.body));
+    // console.log(asdf)
+    console.log("Hey");
+    console.log("Body : ",req.body);
+    console.log("Files : ",req.files);
+    
+    try{
+    files.postfile(req.files,req.body.relativePath,req.body.userid);
+    }catch(e)
+    {
+        console.log(e);
+        res.sendStatus(404);
+    }
+    console.log("Done");
+    res.sendStatus(200);
   });
 
 router.get("/files", async (req,res)=>{
     let fid=req.body.filename;
     let uid=req.body.userid;
-    console.log(req.body.relativePath);
     let file = await files.fetchfile(uid,fid);
 
-    res.json(file);
+    res.send(file);
 });
 
 router.delete("/file", async (req,res)=>{
@@ -88,8 +66,18 @@ router.post("/registerroot",async (req,res)=>{
 //     res.sendFile(path.join(__dirname+'/client/build/index.html'));
 // });
 
+router.post("/move", async(req,res)=>{
+    let file = await files.movefile(req.body.fromfile,req.body.tofile,req.body.filename,req.body.userid);
+})
 
 let asdf="hi";
 let asdf1 = `asdf is ${asdf}`;
 
 module.exports = router;
+
+/*
+postfile -> const res = await axios.post(`http://localhost:5000${action}`, formData) 
+registerroot -> const res = await axios.post(`http://localhost:5000/api/fileService/registerroot`, formData)    //(formData={uid:userid}) 
+fetchfiles  -> const res = await axios.get(`http://localhost:5000/api/fileService/`, formData)    //(formData={userid:userid,filename:filename}) 
+deletefile  -> const res = await axios.delete(`http://localhost:5000/api/fileService/file`, formData)    //(formData={uid:userid,filename:filename}) 
+*/

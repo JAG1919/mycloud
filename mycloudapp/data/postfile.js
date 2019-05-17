@@ -1,56 +1,108 @@
 const mongoCollections = require("../config/mongoCollections");
 const files= mongoCollections.files;
+const uuid = require("uuid");
 
 let exportedmethod ={
     async postfile(newfile,path,userid)
     {
         const fileCollection = await files();
-        let i=0;
-        let f=0;
-        let w="";
-        if(path!=="")
+        if(path=="")
         {
-            let a=path.split('/');
-            console.log(a);
-            console.log(a.length);
-            console.log(i);
-            for(i=0;i<=(a.length-1);i++)
+            const file = await fileCollection.findOne({originalname: newfile[0].originalname,userId: userid})
+            let e={};
+            if(file)
             {
-            
-                const file = await fileCollection.findOne({ filename: a[i], userId:userid});
-                //console.log("file : ",file.filename);
-                console.log("-------------------------------------");   
+                console.log( "A File with same name already Exists");
+            }
+            else
+            {
+                e={
+                    filename:newfile[0].filename,
+                    isdir:false,
+                    originalname:newfile[0].originalname,
+                    children:[null],
+                    parent:"root",
+                    userId:userid
+                }
+                console.log(e);
+                const newInsertInformation = await fileCollection.insertOne(e);
+                console.log("e :",newInsertInformation.ops);
+                const file2 = await fileCollection.findOne({originalname: "root",userId: userid})
+                let r = file2;
+                r.children.push(newfile[0].filename);
+                let updateCommand = {
+                    $set: d
+                };
+                const query = {
+                    originalname:"root",
+                    userId:userid
+                };
+                let w = await fileCollection.updateOne(query, updateCommand);
+            }
+        }
+        else
+        {
+            let a = path.split('/');
+            console.log(path);
+            console.log(a);
+            for(let i=0;i<=(a.length-1);i++)
+            {
+                let file = await fileCollection.findOne({originalname:a[i],userId:userid});
+                console.log("file : ",file);
+                console.log(a[i]);
                 if(file)
                 {
-                    
-                    f=1;
-                    w = file.filename;
+                    console.log("File :",file);
+                    if(i==0)
+                    {
+                        console.log("Folder Already Exists");
+                    }
+                    else
+                    {
+                        if(file.parent == a[i-1])
+                        {
+                            continue;
+                        }
+                        else
+                        {
+                            let e={
+                                filename:uuid.v4(),
+                                isdir:true,
+                                originalname:a[i],
+                                children:[null],
+                                parent:null,
+                                userId:userid
+                            }
+                            const newInsertInformation = await fileCollection.insertOne(e);
+                            console.log("e :",newInsertInformation.ops);
+                        }
+                    }
                 }
                 else
                 {
-                    console.log("a[i] :",a[i]);
-                    let e =[];
+                    let e ={};
+                    console.log("e",e);
                     if((i!=0)&&(i!=a.length-1))
                     {   
                         console.log("Others"); 
-                        e[i]={
-                            filename:a[i],
+                        e={
+                            filename:uuid.v4(),
                             isdir:true,
                             originalname:a[i],
-                            children:[a[i+1]],
-                            parent:a[i-1],
+                            children:[null],
+                            parent:null,
                             userId:userid
                         }
                     }
                     else if(i==a.length-1)
                     {
                         console.log("Last");
-                        e[i]={
-                            filename:newfile.filename,
-                            originalname:newfile.originalname,
-                            isdir:newfile.isdir,
+                        e={
+                            filename:newfile[0].filename,
+                            originalname:newfile[0].originalname,
+                            isdir:false,
                             children:[null],
-                            parent:a[i-1],
+                            parent:null,
                             userId:userid
                         }
                     
@@ -58,65 +110,81 @@ let exportedmethod ={
                     else
                     {   
                         console.log("First");  
-                         e[i]={
-                            filename:a[i],
+                        e={
+                            filename:uuid.v4(),
                             isdir:true,
                             originalname:a[i],
-                            children:[a[i+1]],
+                            children:[null],
                             parent:"root",
                             userId:userid
                         }
                     }
-                    
-                    const newInsertInformation = await fileCollection.insertOne(e[i]);
-                    console.log("e :",newInsertInformation.ops);
+                    console.log("DB : ",e);
+                    const fil = await fileCollection.findOne({originalname: e.originalname,userId: userid})
+                    console.log(fil);
+                    if(e)
+                    {
+                        const newInsertInformation = await fileCollection.insertOne(e);
+                        console.log("e :",newInsertInformation.ops);
+                    }
+                    else
+                    {
+                        continue;
+                    }
                 }
             }
-        }    
-        else
-        {
-            let er={
-                filename:newfile.filename,
-                originalname:newfile.originalname,
-                isdir:newfile.isdir,
-                children:[null],
-                parent:"root",
-                userId:userid
+            let f =[];
+            let k=0;
+            for(let i=0;i<(a.length-1);i++)
+            {
+                let file = await fileCollection.findOne({originalname:a[i],userId:userid});
+                console.log("file : ",file);
+                let file2 = await fileCollection.findOne({originalname:a[i+1],userId:userid});
+                let d = file;
+                if(d.parent=="root")
+                {
+                    f[k]=d.filename;
+                    k++;
+                }
+                d.children.push(file2.filename);
+                let qwe = file2;
+                qwe.parent = file.filename;
+                let updateCommand = {
+                            $set: d
+                        };
+                        let query = {
+                            originalname:a[i],
+                            userId:userid
+                        };
+                let r=await fileCollection.updateOne(query, updateCommand);
+                let updatedCommand = {
+                            $set: d
+                        };
+                        query = {
+                            originalname:a[i],
+                            userId:userid
+                        };
+                let we=await fileCollection.updateOne(query, updatedCommand);
             }
-            const newInsertInformation = await fileCollection.insertOne(er);
-            console.log("er :",newInsertInformation.ops);
-            let file = await fileCollection.findOne({ filename: "root", userId:userid});
-            let r =file;
-            console.log(r);
-            if(r)
-                r.children.push(er.filename);
-            let updateCommand = {
-                $set: r
-            };
-            const query = {
-                filename:"root"
-            };
-            await fileCollection.updateOne(query, updateCommand);
-        }   
-        if(f==1)
-        {
-            console.log("Here");
-            let file = await fileCollection.findOne({ filename: w,userId:userid});
-            let r =file;
-            console.log(r);
-            r.children.push(newfile.filename);
-            let updateCommand = {
-                $set: r
-            };
-            const query = {
-                filename:w
-            };
-            await fileCollection.updateOne(query, updateCommand);
-            file = await fileCollection.findOne({ filename: w});
-             r =file;
-            console.log(r);
+            let e = await fileCollection.findOne({originalname:"root", userId:userid});
+            if(e)
+            {
+                let red = e;
+                red.children.push(f);
+                let updateCommand = {
+                    $set: red
+                };
+                const query = {
+                    originalname:"root",
+                    userId:userid
+                };
+                let ws=await fileCollection.updateOne(query, updateCommand);
+            }
         }
+        await fileCollection.remove({children:[null],parent:"root",isdir:true})
     },
+
+        
     async makeroot(userId)
     {
         const fileCollection = await files();
@@ -143,13 +211,16 @@ let exportedmethod ={
         let a=[{}];
         for(var i=0;i<file.children.length;i++)
         {
+            if(file.children[i]==null)
+                continue;
             let we = await fileCollection.findOne( { filename: file.children[i], userId:userid } );
             a[i]={
                 id:we.filename,
                 originalname: we.originalname
             }
         }
-        return a[i];
+    
+        return a;
     },
     async movefile(fromfilename,tofilename,filefilename,userid)
     {
