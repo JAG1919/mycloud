@@ -204,8 +204,22 @@ let exportedmethod ={
     {
         const fileCollection = await files();
         console.log("I am there");
+        console.log(filename,typeof userid);
         let file = await fileCollection.findOne( { filename: filename, userId:userid } );
         console.log(file);
+        // console.log(filename,userid);
+        // if(file.isdir==false)
+        //     throw "File Detacted, No children";
+        // let a=[{}];
+        // for(var i=0;i<file.children.length;i++)
+        // {
+        //     let we = await fileCollection.findOne( { filename: file.children[i], userId:userid } );
+            // a[i]={
+            //     id:we.filename,
+            //     originalname: we.originalname
+            // }
+        // }
+        return file;
         if(file.isdir==false)
             throw "File Detacted, No children";
         let a=[{}];
