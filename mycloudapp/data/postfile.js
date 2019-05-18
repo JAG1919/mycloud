@@ -221,20 +221,22 @@ let exportedmethod ={
             // }
         // }
         // return file;
-        if(file.isdir==false)
-            throw "File Detacted, No children";
-        let a=[{}];
-        for(var i=0;i<file.children.length;i++)
+        if(file)
         {
-            if(file.children[i]==null)
-                continue;
-            let we = await fileCollection.findOne( { filename: file.children[i], userId:userid } );
-            a[i]={
-                id:we.filename,
-                originalname: we.originalname
+            if(file.isdir==false)
+                throw "File Detacted, No children";
+            let a=[{}];
+            for(var i=0;i<file.children.length;i++)
+            {
+                if(file.children[i]==null)
+                    continue;
+                let we = await fileCollection.findOne( { filename: file.children[i], userId:userid } );
+                a[i]={
+                    id:we.filename,
+                    originalname: we.originalname
+                }
             }
         }
-    
         return a;
     },
     async movefile(fromfilename,tofilename,filefilename,userid)

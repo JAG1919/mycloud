@@ -58,7 +58,7 @@ router.post("/file", upload.array('file'), async (req, res) => {
     console.log("Files : ",req.files);
     
     try{
-    files.postfile(req.files,req.body.relativePath,req.body.userid);
+    files.postfile(req.files,req.body.path,req.body.userid);
     }catch(e)
     {
         console.log(e);
@@ -71,6 +71,7 @@ router.post("/file", upload.array('file'), async (req, res) => {
 router.get("/files", async (req,res)=>{
     let fid=req.body.filename;
     let uid=req.body.userid;
+    console.log(fid,uid);
     let file = await files.fetchfile(uid,fid);
 
     res.send(file);
@@ -84,7 +85,9 @@ router.delete("/file", async (req,res)=>{
 });
 
 router.post("/registerroot",async (req,res)=>{
-    let uid = req.body.uid;
+    let uid = req.body.userid;
+    console.log(uid);
+    console.log(req.body);
     let file = await files.makeroot(uid);
     if(file)
         res.sendStatus(200);
@@ -107,6 +110,6 @@ module.exports = router;
 /*
 postfile -> const res = await axios.post(`http://localhost:5000${action}`, formData) 
 registerroot -> const res = await axios.post(`http://localhost:5000/api/fileService/registerroot`, formData)    //(formData={uid:userid}) 
-fetchfiles  -> const res = await axios.get(`http://localhost:5000/api/fileService/`, formData)    //(formData={userid:userid,filename:filename}) 
+fetchfiles  -> const res = await axios.get(`http://localhost:5000/api/fileService/files`, formData)    //(formData={userid:userid,filename:filename}) 
 deletefile  -> const res = await axios.delete(`http://localhost:5000/api/fileService/file`, formData)    //(formData={uid:userid,filename:filename}) 
 */

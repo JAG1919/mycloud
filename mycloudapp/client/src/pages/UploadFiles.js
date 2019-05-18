@@ -111,15 +111,16 @@ class UploadFiles extends React.Component {
                 // console.log("filename: ",filename)
                 // console.log("file:", file)
                 // console.log("filename:", file)
-                // console.log("path: ",path)
+                //console.log("path: ",path)
                 // const formData = new FormData();
                 // formData.append("relativePath", file['webkitRelativePath'])
                 // formData.append("userid", 123)
                 // formData.append(filename, file);
+                // console.log(formData);
                 // const res = await axios.post(`http://localhost:5000${action}`, formData);
                 // console.log(res.status)
             }
-            // beforeUpload(file) {
+            // beforeUpload(f   ile) {
             //     // console.log(file);
             //     // console.log('beforeUpload', file.name + "1");
             // },
@@ -168,17 +169,25 @@ class UploadFiles extends React.Component {
     }
 
     whenClicked = async(e) => {
-        // const formData = new FormData;
-        // formData.append("uid", 123);
+        // let formData = new FormData();
+        // formData.append("userid", 123);
+        // console.log(formData);
         // const res = await axios.post(`http://localhost:5000/api/fileService/registerroot`, formData);
         // console.log(res.status);
-
-        const formData = new FormData;
-        formData.append("userid", 123);
-        formData.append("filename", "root");
-        const res = await axios.get(`http://localhost:5000/api/fileService/files`, formData)
-        console.log(res);
-        // console.log(res.status);
+        console.log("Hey");
+        const formData = new FormData();
+        // formData.append("relativePath", file['webkitRelativePath'])
+        formData.append('userid', '123');
+        console.log(formData);
+        // formData.append(filename, file);
+        const res = await axios.post(`http://localhost:5000/api/fileService/registerroot`, {userid:123, path:"abc"});
+        // const formData = new FormData();
+        // formData.append("userid", 123);
+        // formData.append("filename", "rc-root");
+        // console.log(formData);
+        // const res = await axios.get(`http://localhost:5000/api/fileService/files`, formData)
+        // console.log(res);
+        // // console.log(res.status);
     }
 
 
