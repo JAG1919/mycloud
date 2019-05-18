@@ -178,14 +178,14 @@ class UploadFiles extends React.Component {
         // const res = await axios.post(`http://localhost:5000/api/fileService/registerroot`, {"uid": user});
         // console.log(res.status);
 
-        // console.log("asdfasdf")
-        // const res = await axios.post(`http://localhost:5000/api/fileService/files`, {"userid":user,filename:"rc-root"});
-        // console.log("res: ",res);
-        // console.log(res.status);
+        console.log("asdfasdf")
+        const res = await axios.post(`http://localhost:5000/api/fileService/files`, {"userid":user,filename:"rc-root"});
+        console.log("res: ",res);
+        console.log(res.status);
 
 
-        const res = await axios.post(`http://localhost:5000/api/fileService/move`, {"userid":user,filename:"4c9a4661e13241583c9c010f30da92a3",fromfile:"e75de63e-374c-4c6d-ab7c-2eabe8eba6e9",tofile:"a9df2739-ce41-49c2-baf6-3086e2dba300"})
-        console.log(res);
+        // const res = await axios.post(`http://localhost:5000/api/fileService/move`, {"userid":user,filename:"4c9a4661e13241583c9c010f30da92a3",fromfile:"e75de63e-374c-4c6d-ab7c-2eabe8eba6e9",tofile:"a9df2739-ce41-49c2-baf6-3086e2dba300"})
+        // console.log(res);
     }
 
 

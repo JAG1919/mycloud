@@ -156,6 +156,8 @@ let exportedmethod ={
                         {
                             for(let i=0;i<e.children.length;i++)
                             {
+                                if(e.children[i]==null)
+                                    continue;
                                 if(e.children[i][0]==d.filename)
                                 {
                                     foe=1;
