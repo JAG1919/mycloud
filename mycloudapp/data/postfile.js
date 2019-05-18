@@ -28,16 +28,21 @@ let exportedmethod ={
                 const newInsertInformation = await fileCollection.insertOne(e);
                 console.log("e :",newInsertInformation.ops);
                 const file2 = await fileCollection.findOne({originalname: "root",userId: userid})
-                let r = file2;
-                r.children.push(newfile[0].filename);
-                let updateCommand = {
-                    $set: d
-                };
-                const query = {
-                    originalname:"root",
-                    userId:userid
-                };
-                let w = await fileCollection.updateOne(query, updateCommand);
+                console.log(file2);
+                if(file2)
+                {
+                    console.log(file2);
+                    let r = file2;
+                    r.children.push(newfile[0].filename);
+                    let updateCommand = {
+                        $set: r
+                    };
+                    const query = {
+                        originalname:"root",
+                        userId:userid
+                    };
+                    let w = await fileCollection.updateOne(query, updateCommand);
+                }
             }
         }
         else
@@ -135,6 +140,7 @@ let exportedmethod ={
             }
             let f =[];
             let k=0;
+            let foe=0;
             for(let i=0;i<(a.length-1);i++)
             {
                 let file = await fileCollection.findOne({originalname:a[i],userId:userid});
@@ -143,8 +149,25 @@ let exportedmethod ={
                 let d = file;
                 if(d.parent=="root")
                 {
-                    f[k]=d.filename;
-                    k++;
+                    let e = await fileCollection.findOne({originalname:"root", userId:userid});
+                    if(e)
+                    {
+                        if(e.children)
+                        {
+                            for(let i=0;i<e.children.length;i++)
+                            {
+                                if(e.children[i][0]==d.filename)
+                                {
+                                    foe=1;
+                                }
+                            }
+                            if(foe ==0)
+                            {
+                                f[k]=d.filename;
+                                k++;
+                            }
+                        }
+                    }
                 }
                 d.children.push(file2.filename);
                 let qwe = file2;
@@ -158,10 +181,10 @@ let exportedmethod ={
                         };
                 let r=await fileCollection.updateOne(query, updateCommand);
                 let updatedCommand = {
-                            $set: d
+                            $set: qwe
                         };
                         query = {
-                            originalname:a[i],
+                            originalname:a[i+1],
                             userId:userid
                         };
                 let we=await fileCollection.updateOne(query, updatedCommand);
@@ -205,7 +228,7 @@ let exportedmethod ={
     {
         const fileCollection = await files();
         console.log("I am there");
-        console.log(filename,typeof userid);
+        console.log(filename, userid);
         let file = await fileCollection.findOne( { filename: filename, userId:userid } );
         console.log(file);
         // console.log(filename,userid);
@@ -226,18 +249,28 @@ let exportedmethod ={
             if(file.isdir==false)
                 throw "File Detacted, No children";
             let a=[{}];
-            for(var i=0;i<file.children.length;i++)
+            if(file.children)
             {
-                if(file.children[i]==null)
-                    continue;
-                let we = await fileCollection.findOne( { filename: file.children[i], userId:userid } );
-                a[i]={
-                    id:we.filename,
-                    originalname: we.originalname
+                for(var i=0;i<file.children.length;i++)
+                {
+                    if(file.children[i]==null)
+                        continue;
+                    console.log("Child :",file.children[i]);
+                    let we = await fileCollection.findOne( { filename: file.children[i][0], userId:userid } );
+                    console.log("WE :",we);
+                    if(we)
+                    {
+                        a[i]={
+                            id:we.filename,
+                            originalname: we.originalname
+                        }
+                    }
                 }
             }
+            console.log(a);
+            return a;
         }
-        return a;
+        
     },
     async movefile(fromfilename,tofilename,filefilename,userid)
     {

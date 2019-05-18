@@ -15,44 +15,11 @@ let versioncontrol = (req,res,next)=>
 }
 
 
-router.post("/file", upload.array('file'), async (req, res) => {
-    // connect to redis
-    // let client = await getRedis();
-    // client.on('connect',(req,res)=>{
-    //     console.log('Redis Connected');
-    // })
+router.post("/file", upload.array('file'), (req, res) => {
     
     const asdf = req.body;
-    // console.log("req.body", JSON.stringify(req.body));
-    console.log("body: ",req.body)
-    // use variable to save req.body
     
-    // let file=req.body;
-    // file={
-    //     issdir:false,
-    //     fileName : req.body.uid,
-    //     parent : null,
-    //     children: [null]
-    // }
-
-    // console.log(req.body.file);
-    // console.log(file);
-    //let path=req.body.relativePath;
-    // console.log("path: ",path);
-    // let userid = req.body.userid;
-    // console.log("userid: ",userid);
-    // then push to Redis Cache
-    // let a = await files.postfile(file,path,userid)
-    // client.hmset(id,[
-    //     "fileName",fileName,
-    //     "parent", parent,
-    //     "children", children
-    // ],function(err,reply){
-    //     if(err){
-    //         console.log(err);
-    //     }
-    //     // console.log(req.body)
-    // })
+    console.log("body: ",req.body)
     console.log("Hey");
     console.log("Body : ",req.body);
     console.log("Files : ",req.files);
@@ -68,12 +35,13 @@ router.post("/file", upload.array('file'), async (req, res) => {
     res.sendStatus(200);
   });
 
-router.get("/files", async (req,res)=>{
+router.post("/files", async (req,res)=>{
     let fid=req.body.filename;
     let uid=req.body.userid;
-    console.log(fid,uid);
+    //console.log(req);
+    console.log(req.body);
     let file = await files.fetchfile(uid,fid);
-
+    console.log(file);
     res.send(file);
 });
 
@@ -85,7 +53,7 @@ router.delete("/file", async (req,res)=>{
 });
 
 router.post("/registerroot",async (req,res)=>{
-    let uid = req.body.userid;
+    let uid = req.body.uid;
     console.log(uid);
     console.log(req.body);
     let file = await files.makeroot(uid);

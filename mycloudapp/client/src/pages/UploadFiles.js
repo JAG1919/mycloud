@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Upload from 'rc-upload';
 import axios from 'axios';
+import firebase from '../config/firebase';  
 // import FileIcon, { defaultStyles } from 'react-file-icon';
 
 const asdf = [
@@ -169,25 +170,24 @@ class UploadFiles extends React.Component {
     }
 
     whenClicked = async(e) => {
-        // let formData = new FormData();
-        // formData.append("userid", 123);
-        // console.log(formData);
-        // const res = await axios.post(`http://localhost:5000/api/fileService/registerroot`, formData);
+        let user = firebase.auth().currentUser.uid;
+
+        // var formData = new FormData();
+        // formData.append("uid", user);
+        // // formData.append("asdf", "asdf");
+        // const res = await axios.post(`http://localhost:5000/api/fileService/registerroot`, {"uid": user});
         // console.log(res.status);
-        console.log("Hey");
-        const formData = new FormData();
-        // formData.append("relativePath", file['webkitRelativePath'])
-        formData.append('userid', '123');
-        console.log(formData);
-        // formData.append(filename, file);
-        const res = await axios.post(`http://localhost:5000/api/fileService/registerroot`, {userid:123, path:"abc"});
-        // const formData = new FormData();
-        // formData.append("userid", 123);
-        // formData.append("filename", "rc-root");
-        // console.log(formData);
-        // const res = await axios.get(`http://localhost:5000/api/fileService/files`, formData)
-        // console.log(res);
-        // // console.log(res.status);
+
+        console.log("asdfasdf")
+        let a=
+        {
+            "userid":user,
+            "filename": "rc-root"
+        }
+        console.log(a);
+        const res = await axios.post(`http://localhost:5000/api/fileService/files`, {"userid":user,filename:"rc-root"});
+        console.log("res: ",res);
+        console.log(res.status);
     }
 
 
@@ -204,7 +204,6 @@ class UploadFiles extends React.Component {
             <div ondragover={this.allowDrop} style={allcontainer}>
                 <div ref={this.element}><Upload {...this.uploaderProps}><a onClick="return false" style={filedrop}>Drop Files and Directories Here</a></Upload></div>
                 <div style={itemcontainer}>{listoffiles}</div>
-                {/* <div>{firebase.auth().currentUser.uid}</div> */}
                 <div onClick={this.whenClicked}>click here</div>
             </div>);
     }
@@ -233,6 +232,7 @@ class UploadFiles extends React.Component {
         }
     }
     traverseFileTree = async (item, path) => {
+        let user = firebase.auth().currentUser.uid;
         path = path || "";
         if (item.isFile) {
             // Get file
@@ -243,8 +243,12 @@ class UploadFiles extends React.Component {
                 console.log("File:", path + file.name);
                 console.log("File2:", file);
                 const formData = new FormData();
-                formData.append("userid", 123);
-                formData.append("path", filepath);
+                formData.append("userid", user);
+                if (!path){
+                    formData.append("path", "");
+                } else {
+                    formData.append("path", filepath);
+                }
                 formData.append("file", file);
                 const res = axios.post(`http://localhost:5000${action}`, formData);
                 console.log(res.status)
