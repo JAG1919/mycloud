@@ -163,24 +163,22 @@ class UploadFiles extends React.Component {
         console.log(e);
     }
 
-    whenClicked = (e) => {
-        // console.log("hi")
-        // e.preventDefault();
-        // e.disabled = true;
-        // console.log("hi")
-        return "return return false";
-    }
-
     allowDrop = (e) => {
         console.log(e)
     }
 
-    newdrop = (e) => {
-        console.log(e)
-    }
+    whenClicked = async(e) => {
+        // const formData = new FormData;
+        // formData.append("uid", 123);
+        // const res = await axios.post(`http://localhost:5000/api/fileService/registerroot`, formData);
+        // console.log(res.status);
 
-    filetree = () => {
-        console.log("hi")
+        const formData = new FormData;
+        formData.append("userid", 123);
+        formData.append("filename", "root");
+        const res = await axios.get(`http://localhost:5000/api/fileService/files`, formData)
+        console.log(res);
+        // console.log(res.status);
     }
 
 
@@ -197,6 +195,8 @@ class UploadFiles extends React.Component {
             <div ondragover={this.allowDrop} style={allcontainer}>
                 <div ref={this.element}><Upload {...this.uploaderProps}><a onClick="return false" style={filedrop}>Drop Files and Directories Here</a></Upload></div>
                 <div style={itemcontainer}>{listoffiles}</div>
+                {/* <div>{firebase.auth().currentUser.uid}</div> */}
+                <div onClick={this.whenClicked}>click here</div>
             </div>);
     }
     componentDidMount = async () => {
@@ -209,7 +209,7 @@ class UploadFiles extends React.Component {
         // this.setState({
         //     files: res.children
         // })
-        this.element.current.addEventListener('drop', this.handleEvent)
+        this.element.current.addEventListener('drop', this.handleEvent);
     }
 
     handleEvent = (event) => {
