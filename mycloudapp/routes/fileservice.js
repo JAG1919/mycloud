@@ -85,6 +85,7 @@ router.delete("/file", async (req,res)=>{
 
 router.post("/registerroot",async (req,res)=>{
     let uid = req.body.uid;
+    console.log("body: ",req.body)
     let file = await files.makeroot(uid);
     if(file)
         res.sendStatus(200);
