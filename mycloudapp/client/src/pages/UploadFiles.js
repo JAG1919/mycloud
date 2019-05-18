@@ -11,10 +11,10 @@ const asdf = [
         dir: false
     },
     {
-        id:5678,
+        id: 5678,
         name: "directory1",
         dir: true,
-        children:[
+        children: [
             {
                 id: 2345,
                 name: "file2",
@@ -30,7 +30,7 @@ const asdf = [
 ]
 
 const filedrop = {
-    display:"inline-block",
+    display: "inline-block",
     height: "100px",
     width: "300px",
     color: 'grey',
@@ -77,8 +77,11 @@ class UploadFiles extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            files:null,
+            files: null,
+            path: ''
         }
+        this.element = React.createRef();
+        // this.traverseFileTree = this.traverseFileTree.bind(this);
         this.myRef = React.createRef();
         this.uploaderProps = {
             action: '/api/fileService/file',
@@ -87,9 +90,9 @@ class UploadFiles extends React.Component {
             //     Authorization: 'xxxxxxx',
             //   },
             directory: true,
-        
+
             onSuccess(result, file, xhr) {
-                file.a="assdf";
+                file.a = "assdf";
                 console.log(file);
                 console.log(xhr);
             },
@@ -103,23 +106,18 @@ class UploadFiles extends React.Component {
                 onProgress,
                 onSuccess,
                 withCredentials,
-              }) => {
-                console.log("data:", data)
-                console.log("file:", file)
-                console.log("filename:", file)
-                const formData = new FormData();
-                // if (data) {
-                //   Object.keys(data).map(key => {
-                //     formData.append(key, data[key]);
-                //   });
-                // }
-                console.log("path",file.webkitRelativePath);
-                formData.append("relativePath", file['webkitRelativePath'])
-                formData.append("userid", 123)
-                formData.append(filename, file);
-                console.log(file);
-                const res = await axios.post(`http://localhost:5000${action}`, formData);
-                console.log(res.status)
+            }) => {
+                // console.log("data:", data)
+                // console.log("filename: ",filename)
+                // console.log("file:", file)
+                // console.log("filename:", file)
+                // console.log("path: ",path)
+                // const formData = new FormData();
+                // formData.append("relativePath", file['webkitRelativePath'])
+                // formData.append("userid", 123)
+                // formData.append(filename, file);
+                // const res = await axios.post(`http://localhost:5000${action}`, formData);
+                // console.log(res.status)
             }
             // beforeUpload(file) {
             //     // console.log(file);
@@ -131,7 +129,7 @@ class UploadFiles extends React.Component {
             //     // this.refs.inner.abort(file);
             // },
             // onSuccess(file) {
-                // console.log('onSuccess', file);
+            // console.log('onSuccess', file);
             // },
             // onProgress(step, file) {
             //     // console.log('onProgress', Math.round(step.percent), file.name);
@@ -143,28 +141,7 @@ class UploadFiles extends React.Component {
             //     //   console.log('onChange', file.isDirectory);
             // }
         };
-        // this.state = {
-        //     files: null
-        // }
     }
-    // filedata={
-    //     filename: "asdf",
-    //     userId: "asdf"
-    // }
-    // let res = await axios.get(`http://localhost:5000/api/fileService/files`,filedata)
-
-    componentDidMount = async () => {
-        let a =  await axios.post(`http://localhost:5000/api/fileService/registerroot`,"123")
-        let file={
-            filename:"root",
-            userid:"123"
-        }
-        let res =  await axios.get(`http://localhost:5000/api/fileService/files`,file)
-        this.setState({
-            files: res.children
-        })
-    }
-    
     drag = (ev) => {
         console.log(ev.target)
         ev.dataTransfer.setData("file", ev.target.dataset.id);
@@ -186,28 +163,92 @@ class UploadFiles extends React.Component {
         console.log(e);
     }
 
-    whenClicked = (e) => {
-        // console.log("hi")
-        // e.preventDefault();
-        // e.disabled = true;
-        // console.log("hi")
-        return "return return false";
+    allowDrop = (e) => {
+        console.log(e)
     }
+
+    whenClicked = async(e) => {
+        // const formData = new FormData;
+        // formData.append("uid", 123);
+        // const res = await axios.post(`http://localhost:5000/api/fileService/registerroot`, formData);
+        // console.log(res.status);
+
+        const formData = new FormData;
+        formData.append("userid", 123);
+        formData.append("filename", "root");
+        const res = await axios.get(`http://localhost:5000/api/fileService/files`, formData)
+        console.log(res);
+        // console.log(res.status);
+    }
+
+
     render() {
-        
-        let listoffiles = this.state.files.map(file => {
-            if (file.isdir === true){
-                return(<label style={filelabel}><div style={filediv} draggable="true" onDragStart={this.drag} onDragOver={this.allowDrop} onDrop={this.drop} onClick={this.whenDirClicked}>{file}</div></label>);
+
+        let listoffiles = asdf.map(file => {
+            if (file.isdir === true) {
+                return (<label style={filelabel}><div style={filediv} draggable="true" onDragStart={this.drag} onDragOver={this.allowDrop} onDrop={this.drop} onClick={this.whenDirClicked}>{file.name}</div></label>);
             }
-            return (<label style={filelabel}><div style={filediv}  draggable="true" onDragStart={this.drag}>{file}</div></label>);
+            return (<label style={filelabel}><div style={filediv} draggable="true" onDragStart={this.drag}>{file.name}</div></label>);
         });
         //data-id={file.id} key={file.id}
         return (
-            <div style={allcontainer}>                      
-                <Upload {...this.uploaderProps} ref="inner"><a onClick={this.whenClicked} style={filedrop}>Drop Files and Directories Here</a></Upload>
+            <div ondragover={this.allowDrop} style={allcontainer}>
+                <div ref={this.element}><Upload {...this.uploaderProps}><a onClick="return false" style={filedrop}>Drop Files and Directories Here</a></Upload></div>
                 <div style={itemcontainer}>{listoffiles}</div>
-                {/* <FileIcon extension="pdf" {...defaultStyles.pdf} /> */}
+                {/* <div>{firebase.auth().currentUser.uid}</div> */}
+                <div onClick={this.whenClicked}>click here</div>
             </div>);
+    }
+    componentDidMount = async () => {
+        // let a = await axios.post(`http://localhost:5000/api/fileService/registerroot`, "123")
+        // let file = {
+        //     filename: "root",
+        //     userid: "123"
+        // }
+        // let res = await axios.get(`http://localhost:5000/api/fileService/files`, file)
+        // this.setState({
+        //     files: res.children
+        // })
+        this.element.current.addEventListener('drop', this.handleEvent);
+    }
+
+    handleEvent = (event) => {
+        event.preventDefault();
+        var items = event.dataTransfer.items;
+        for (var i = 0; i < items.length; i++) {
+            // webkitGetAsEntry is where the magic happens
+            var item = items[i].webkitGetAsEntry();
+            if (item) {
+                this.traverseFileTree(item);
+            }
+        }
+    }
+    traverseFileTree = async (item, path) => {
+        path = path || "";
+        if (item.isFile) {
+            // Get file
+            let filepath = null;
+            item.file(function(file) {
+                let action = '/api/fileService/file';
+                filepath = path + file.name;
+                console.log("File:", path + file.name);
+                console.log("File2:", file);
+                const formData = new FormData();
+                formData.append("userid", 123);
+                formData.append("path", filepath);
+                formData.append("file", file);
+                const res = axios.post(`http://localhost:5000${action}`, formData);
+                console.log(res.status)
+            });
+        } else if (item.isDirectory) {
+          // Get folder contents
+            var dirReader = item.createReader();
+            dirReader.readEntries((entries) => {
+                for (var i=0; i<entries.length; i++) {
+                    this.traverseFileTree(entries[i], path + item.name + "/");                
+                }
+            });
+        }
     }
 }
 

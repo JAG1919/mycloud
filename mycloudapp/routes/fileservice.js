@@ -15,15 +15,44 @@ let versioncontrol = (req,res,next)=>
 }
 
 
-router.post("/file", upload.array('file'), versioncontrol, (req, res) => {
+router.post("/file", upload.array('file'), async (req, res) => {
     // connect to redis
     // let client = await getRedis();
     // client.on('connect',(req,res)=>{
     //     console.log('Redis Connected');
     // })
-    // const asdf = req.body;
+    
+    const asdf = req.body;
     // console.log("req.body", JSON.stringify(req.body));
-    // console.log(asdf)
+    console.log("body: ",req.body)
+    // use variable to save req.body
+    
+    // let file=req.body;
+    // file={
+    //     issdir:false,
+    //     fileName : req.body.uid,
+    //     parent : null,
+    //     children: [null]
+    // }
+
+    // console.log(req.body.file);
+    // console.log(file);
+    //let path=req.body.relativePath;
+    // console.log("path: ",path);
+    // let userid = req.body.userid;
+    // console.log("userid: ",userid);
+    // then push to Redis Cache
+    // let a = await files.postfile(file,path,userid)
+    // client.hmset(id,[
+    //     "fileName",fileName,
+    //     "parent", parent,
+    //     "children", children
+    // ],function(err,reply){
+    //     if(err){
+    //         console.log(err);
+    //     }
+    //     // console.log(req.body)
+    // })
     console.log("Hey");
     console.log("Body : ",req.body);
     console.log("Files : ",req.files);
