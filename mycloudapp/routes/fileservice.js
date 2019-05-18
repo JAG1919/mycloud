@@ -67,7 +67,12 @@ router.post("/registerroot",async (req,res)=>{
 // });
 
 router.post("/move", async(req,res)=>{
+    console.log(req.body);
     let file = await files.movefile(req.body.fromfile,req.body.tofile,req.body.filename,req.body.userid);
+    if(file)
+        res.sendStatus(200);
+    else
+        res.sendStatus(404);
 })
 
 let asdf="hi";

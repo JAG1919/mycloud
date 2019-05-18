@@ -274,6 +274,7 @@ let exportedmethod ={
     },
     async movefile(fromfilename,tofilename,filefilename,userid)
     {
+        const fileCollection = await files();
         let file = await fileCollection.findOne({filename:filefilename,userId:userid})
         let file2 = await fileCollection.findOne({filename:fromfilename,userId:userid})
         let file3 = await fileCollection.findOne({filename:tofilename,userId:userid})
@@ -283,32 +284,38 @@ let exportedmethod ={
         let updateCommand = {
             $set: r
         };
-        const query = {
-            fileid:r.filename
+        let query = {
+            filename:r.filename
         };
-        await fileCollection.updateOne(query, updateCommand);
-
+        let e = await fileCollection.updateOne(query, updateCommand);
+        console.log("File :",r);
         for( var i = 0; i < file2.children.length; i++){ 
             if ( file2.children[i] === file.filename) {
               file2.children.splice(i, 1); 
             }
          }
-         let updateCommand = {
+        updateCommand = {
             $set: file2
         };
-        const query = {
-            fileid:file2.filename
+        query = {
+            filename:file2.filename
         };
-        await fileCollection.updateOne(query, updateCommand);
+        let err=await fileCollection.updateOne(query, updateCommand);
+        console.log("From File :",file2)
         r=file3;
         file3.children.push(file.filename);
-        let updateCommand = {
+        updateCommand = {
             $set: r
         };
-        const query = {
-            fileid:r.filename
+        query = {
+            filename:r.filename
         };
-        await fileCollection.updateOne(query, updateCommand);
+        let er= await fileCollection.updateOne(query, updateCommand);
+        console.log("To File  :", r);
+        if((e)&&(er)&&(err))
+            return true;
+        else
+            return false;
     },
     async deletefile(filename,userid)
     {
