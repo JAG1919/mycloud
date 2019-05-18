@@ -189,7 +189,8 @@ let exportedmethod ={
     {
         const fileCollection = await files();
         let newroot={
-            filename:"root",
+            filename:"rc-root",
+            originalname:"root",
             parent:null,
             userId:userId,
             children:[null]
@@ -219,7 +220,7 @@ let exportedmethod ={
             //     originalname: we.originalname
             // }
         // }
-        return file;
+        // return file;
         if(file.isdir==false)
             throw "File Detacted, No children";
         let a=[{}];
