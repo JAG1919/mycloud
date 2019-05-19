@@ -170,9 +170,9 @@ class UploadFiles extends React.Component {
 
     back = (e) => {
         if(this.parent){
-            console.log(true)
+            // this.setState
         }else {
-            console.log(false)
+
         }
     }
 

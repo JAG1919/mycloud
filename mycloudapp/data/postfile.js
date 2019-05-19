@@ -163,9 +163,9 @@ let exportedmethod ={
                                     foe=1;
                                 }
                             }
-                            if(foe ==0)
+                            if(foe == 0)
                             {
-                                f[k]=d.filename;
+                                f=d.filename;
                                 k++;
                             }
                         }
@@ -195,7 +195,8 @@ let exportedmethod ={
             if(e)
             {
                 let red = e;
-                red.children.push(f);
+                if(!red.children.includes(f))
+                    red.children.push(f);
                 let updateCommand = {
                     $set: red
                 };
@@ -249,8 +250,8 @@ let exportedmethod ={
         if(file)
         {
             if(file.isdir==false)
-                throw "File Detacted, No children";
-            let a=[{}];
+                return "File Detacted, No children";
+            let a=[];
             if(file.children)
             {
                 for(var i=0;i<file.children.length;i++)
@@ -259,12 +260,13 @@ let exportedmethod ={
                         continue;
                     console.log("Child :",file.children[i]);
                     let we = null;
-                    if (file.filename == "rc-root"){
-                        we = await fileCollection.findOne( { filename: file.children[i][0], userId:userid } );
-                    } else {
-                        we = await fileCollection.findOne( { filename: file.children[i], userId:userid } );
-                    }
+                    // if (file.filename == "rc-root"){
+                    //     we = await fileCollection.findOne( { filename: file.children[i][0], userId:userid } );
+                    // } else {
+                    //     we = await fileCollection.findOne( { filename: file.children[i], userId:userid } );
+                    // }
                     
+                    let we = await fileCollection.findOne( { filename: file.children[i], userId:userid } );
                     console.log("WE :",we);
                     if(we)
                     {
