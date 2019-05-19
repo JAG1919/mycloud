@@ -78,12 +78,14 @@ class UploadFiles extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            files: null,
-            path: ''
+            files: [],
+            user:'',
+            didload: false,
         }
         this.element = React.createRef();
         // this.traverseFileTree = this.traverseFileTree.bind(this);
         this.myRef = React.createRef();
+        this.parent = "";
         this.uploaderProps = {
             action: '/api/fileService/file',
             multiple: true,
@@ -144,6 +146,7 @@ class UploadFiles extends React.Component {
             // }
         };
     }
+
     drag = (ev) => {
         console.log(ev.target)
         ev.dataTransfer.setData("file", ev.target.dataset.id);
@@ -161,51 +164,99 @@ class UploadFiles extends React.Component {
         // ev.target.appendChild(document.getElementById(data));
     }
 
-    whenDirClicked = (e) => {
-        console.log(e);
-    }
-
     allowDrop = (e) => {
         console.log(e)
+    }
+
+    back = (e) => {
+        if(this.parent){
+            console.log(true)
+        }else {
+            console.log(false)
+        }
+    }
+
+    whenDirClicked = async(e) => {
+        console.log("dirId: ",e.target.dataset.id)
+        const dirId = e.target.dataset.id;
+        const children = await axios.post(`http://localhost:5000/api/fileService/files`, {"userid":this.state.user,filename:dirId});
+        console.log("children: ",children)
+        this.setState({files: children.data})
     }
 
     whenClicked = async(e) => {
         let user = firebase.auth().currentUser.uid;
 
-        // var formData = new FormData();
-        // formData.append("uid", user);
-        // // formData.append("asdf", "asdf");
         // const res = await axios.post(`http://localhost:5000/api/fileService/registerroot`, {"uid": user});
         // console.log(res.status);
 
-        console.log("asdfasdf")
-        const res = await axios.post(`http://localhost:5000/api/fileService/files`, {"userid":user,filename:"rc-root"});
+        const res = await axios.post(`http://localhost:5000/api/fileService/files`, {"userid":user,filename:"228c8465-8a8d-49a4-b61b-ceed2cca31ed"});
         console.log("res: ",res);
         console.log(res.status);
 
-
+        // console.log("userstate: ", this.state.user);
+        // console.log("filesstate: ",this.state.files)
+        // this.setState({files: ["asdf"]})
         // const res = await axios.post(`http://localhost:5000/api/fileService/move`, {"userid":user,filename:"4c9a4661e13241583c9c010f30da92a3",fromfile:"e75de63e-374c-4c6d-ab7c-2eabe8eba6e9",tofile:"a9df2739-ce41-49c2-baf6-3086e2dba300"})
         // console.log(res);
     }
 
+    componentDidUpdate = async() => {
+        if(this.state.didload === !true){
+            const user = firebase.auth().currentUser.uid;
+            const newfiles = await axios.post(`http://localhost:5000/api/fileService/files`, {"userid":user,filename:"rc-root"});
+            this.setState({user: user, files: newfiles.data, didload: true});
+        } else {
+
+        }
+        // console.log(this.user)
+        // console.log(res.status);
+    }
 
     render() {
+        // console.log("user:",this.props.authuser)
+        if(this.state.didload === true){
+            let listoffiles = this.state.files.map(file => {
+                console.log("filemap: ",)
+                if(file.id){
+                    if (file.isdir === true) {
+                        return (<label style={filelabel}><div style={filediv} draggable="true" onDragStart={this.drag} onDragOver={this.allowDrop} onDrop={this.drop} onClick={this.whenDirClicked} data-id={file.id}>{file.originalname}</div></label>);
+                    }
+                    return (<label style={filelabel}><div style={filediv} draggable="true" onDragStart={this.drag} data-id={file.id}>{file.originalname}</div></label>);
+                }
+            });
+            return (
+                <div ondragover={this.allowDrop} style={allcontainer}>
+                    <div ref={this.element}><Upload {...this.uploaderProps}><a onClick="return false" style={filedrop}>Drop Files and Directories Here</a></Upload></div>
+                    <button type="button" onClick={this.back} className="btn btn-primary">Back</button>
+                    <div style={itemcontainer}>{listoffiles}</div>
+                    <div onClick={this.whenClicked}>click here</div>
+                </div>);
 
-        let listoffiles = asdf.map(file => {
-            if (file.isdir === true) {
-                return (<label style={filelabel}><div style={filediv} draggable="true" onDragStart={this.drag} onDragOver={this.allowDrop} onDrop={this.drop} onClick={this.whenDirClicked}>{file.name}</div></label>);
-            }
-            return (<label style={filelabel}><div style={filediv} draggable="true" onDragStart={this.drag}>{file.name}</div></label>);
-        });
-        //data-id={file.id} key={file.id}
-        return (
-            <div ondragover={this.allowDrop} style={allcontainer}>
-                <div ref={this.element}><Upload {...this.uploaderProps}><a onClick="return false" style={filedrop}>Drop Files and Directories Here</a></Upload></div>
-                <div style={itemcontainer}>{listoffiles}</div>
-                <div onClick={this.whenClicked}>click here</div>
-            </div>);
+        } else {
+            return (
+                <div ondragover={this.allowDrop} style={allcontainer}>
+                    <div ref={this.element}><Upload {...this.uploaderProps}><a onClick="return false" style={filedrop}>Drop Files and Directories Here</a></Upload></div>
+                    <div style={itemcontainer}></div>
+                    <div onClick={this.whenClicked}>click here</div>
+                </div>);
+        }
+        // let listoffiles = this.state.files.map(file => {
+        //     if (file.isdir === true) {
+        //         return (<label style={filelabel}><div style={filediv} draggable="true" onDragStart={this.drag} onDragOver={this.allowDrop} onDrop={this.drop} onClick={this.whenDirClicked}>{file.originalname}</div></label>);
+        //     }
+        //     return (<label style={filelabel}><div style={filediv} draggable="true" onDragStart={this.drag}>{file.name}</div></label>);
+        // });
+        // //data-id={file.id} key={file.id}
+        // return (
+        //     <div ondragover={this.allowDrop} style={allcontainer}>
+        //         <div ref={this.element}><Upload {...this.uploaderProps}><a onClick="return false" style={filedrop}>Drop Files and Directories Here</a></Upload></div>
+        //         <div style={itemcontainer}>{listoffiles}</div>
+        //         <div onClick={this.whenClicked}>click here</div>
+        //     </div>);
     }
     componentDidMount = async () => {
+        // let user = firebase.auth().currentUser.uid;
         // let a = await axios.post(`http://localhost:5000/api/fileService/registerroot`, "123")
         // let file = {
         //     filename: "root",
@@ -215,7 +266,11 @@ class UploadFiles extends React.Component {
         // this.setState({
         //     files: res.children
         // })
-        this.element.current.addEventListener('drop', this.handleEvent);
+        try {
+            this.element.current.addEventListener('drop', this.handleEvent);
+        } catch(err){
+            console.log(err)
+        }
     }
 
     handleEvent = (event) => {

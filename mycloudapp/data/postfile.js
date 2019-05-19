@@ -232,7 +232,7 @@ let exportedmethod ={
         console.log("I am there");
         console.log(filename, userid);
         let file = await fileCollection.findOne( { filename: filename, userId:userid } );
-        console.log(file);
+        console.log("file: ",file);
         // console.log(filename,userid);
         // if(file.isdir==false)
         //     throw "File Detacted, No children";
@@ -258,13 +258,21 @@ let exportedmethod ={
                     if(file.children[i]==null)
                         continue;
                     console.log("Child :",file.children[i]);
-                    let we = await fileCollection.findOne( { filename: file.children[i][0], userId:userid } );
+                    let we = null;
+                    if (file.filename == "rc-root"){
+                        we = await fileCollection.findOne( { filename: file.children[i][0], userId:userid } );
+                    } else {
+                        we = await fileCollection.findOne( { filename: file.children[i], userId:userid } );
+                    }
+                    
                     console.log("WE :",we);
                     if(we)
                     {
                         a[i]={
                             id:we.filename,
-                            originalname: we.originalname
+                            originalname: we.originalname,
+                            isdir: we.isdir,
+                            parent: we.parent
                         }
                     }
                 }

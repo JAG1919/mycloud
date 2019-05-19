@@ -29,6 +29,10 @@ class Dashboard extends Component {
               }));
         });
       }
+      componentDidUpdate = () => {
+        this.user = firebase.auth().currentUser.uid
+        // console.log(this.user)
+      }
     render() {
         return (
             <div className="app">
@@ -37,7 +41,6 @@ class Dashboard extends Component {
             </AppHeader>
         <div className="app-body">
        <UploadFiles/>
-        
         </div>
         <AppFooter>
             <DefaultFooter />

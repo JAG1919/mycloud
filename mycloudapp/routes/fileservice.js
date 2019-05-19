@@ -39,9 +39,9 @@ router.post("/files", async (req,res)=>{
     let fid=req.body.filename;
     let uid=req.body.userid;
     //console.log(req);
-    console.log(req.body);
+    console.log("req.body: ",req.body);
     let file = await files.fetchfile(uid,fid);
-    console.log(file);
+    console.log("routesfile: ",file);
     res.send(file);
 });
 
