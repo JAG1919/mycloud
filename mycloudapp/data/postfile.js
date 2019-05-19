@@ -331,7 +331,6 @@ let exportedmethod ={
     },
     async deletefile(filename,userid)
     {
-        var f=true;
         const fileCollection = await files();
         const r=fileCollection.remove({filename:filename,userId:userid},true);
         return r;
