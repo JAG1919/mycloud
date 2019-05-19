@@ -48,8 +48,12 @@ router.post("/files", async (req,res)=>{
 router.delete("/file", async (req,res)=>{
     let uid = req.body.uid;
     let filename = req.body.filename;
-
+    console.log(uid,filename);
     let file= await files.deletefile(filename,uid);
+    if(file)
+        res.sendStatus(200);
+    else
+        res.sendStatus(404);
 });
 
 router.post("/registerroot",async (req,res)=>{
