@@ -12,6 +12,7 @@ import List from './pages/List';
 // import { renderRoutes } from 'react-router-config';
 import './App.scss';
 import Dashboard from '../src/pages/Dashboard';
+import Cropper from './pages/EditPic';
 
 const loading = () => <div className="animated fadeIn pt-3 text-center">Loading...</div>;
 
@@ -43,6 +44,7 @@ class App extends Component {
           <Route path='/home' component={Home} />
           <Route path='/list' component={List} />
           <Route path="/login" component={Login} />
+          <Route path="/cropper" component={Cropper} />
           <Route path="/register" component={Register} />
           <Route path="/404" component={Page404} />
           <Route path="/500" component={Page500} />

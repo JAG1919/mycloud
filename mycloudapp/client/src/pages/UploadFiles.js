@@ -3,6 +3,9 @@ import ReactDOM from 'react-dom';
 import Upload from 'rc-upload';
 import axios from 'axios';
 import firebase from '../config/firebase';  
+import { Button, } from 'reactstrap';
+import { NavLink } from 'react-router-dom';
+import { Nav, NavItem } from 'reactstrap';
 // import FileIcon, { defaultStyles } from 'react-file-icon';
 
 const asdf = [
@@ -94,11 +97,12 @@ class UploadFiles extends React.Component {
             //   },
             directory: true,
 
-            onSuccess(result, file, xhr) {
-                file.a = "assdf";
-                console.log(file);
-                console.log(xhr);
-            },
+            // onSuccess(result, file, xhr) {
+            //     console.log("asdfasfasfasdfasdgssg")
+            //     console.log("file: ",file);
+            //     console.log("xhr: ",xhr);
+            //     console.log("result: ",result);
+            // },
             customRequest: async ({
                 action,
                 data,
@@ -122,28 +126,29 @@ class UploadFiles extends React.Component {
                 // console.log(formData);
                 // const res = await axios.post(`http://localhost:5000${action}`, formData);
                 // console.log(res.status)
+            },
+            beforeUpload(file) {
+                console.log(file);
+                console.log('beforeUpload', file.name + "1");
+            },
+            onStart: (file) => {
+                console.log(file.isDirectory);
+                console.log('onStart', file);
+                // this.refs.inner.abort(file);
+            },
+            onProgress(step, file) {
+                // console.log('onProgress', Math.round(step.percent), file.name);
+            },
+            onSuccess:(file) => {
+                console.log("kjsdhflksdf")
+                console.log('onSuccess', file);
+            },
+            onError(err) {
+                console.log('onError', err);
+            },
+            onChange(file) {
+                  console.log('onChange', file.isDirectory);
             }
-            // beforeUpload(f   ile) {
-            //     // console.log(file);
-            //     // console.log('beforeUpload', file.name + "1");
-            // },
-            // onStart: (file) => {
-            //     // console.log(file.isDirectory);
-            //     // console.log('onStart', file.name);
-            //     // this.refs.inner.abort(file);
-            // },
-            // onSuccess(file) {
-            // console.log('onSuccess', file);
-            // },
-            // onProgress(step, file) {
-            //     // console.log('onProgress', Math.round(step.percent), file.name);
-            // },
-            // onError(err) {
-            //     // console.log('onError', err);
-            // },
-            // onChange(file) {
-            //     //   console.log('onChange', file.isDirectory);
-            // }
         };
     }
 
@@ -190,14 +195,22 @@ class UploadFiles extends React.Component {
         // const res = await axios.post(`http://localhost:5000/api/fileService/registerroot`, {"uid": user});
         // console.log(res.status);
 
-        const res = await axios.post(`http://localhost:5000/api/fileService/files`, {"userid":user,filename:"228c8465-8a8d-49a4-b61b-ceed2cca31ed"});
+        const res = await axios.post(`http://localhost:5000/api/fileService/files`, {"userid":user,filename:"rc-root"});
         console.log("res: ",res);
-        console.log(res.status);
+        // console.log(res.status);
+        // console.log("asdfasdf")
+        // const res = await axios.post(`http://localhost:5000/api/fileService/files`, {"userid":user,filename:"rc-root"});
+        // console.log("res: ",res);
+        // console.log(res.status);
 
         // console.log("userstate: ", this.state.user);
         // console.log("filesstate: ",this.state.files)
         // this.setState({files: ["asdf"]})
         // const res = await axios.post(`http://localhost:5000/api/fileService/move`, {"userid":user,filename:"4c9a4661e13241583c9c010f30da92a3",fromfile:"e75de63e-374c-4c6d-ab7c-2eabe8eba6e9",tofile:"a9df2739-ce41-49c2-baf6-3086e2dba300"})
+        // console.log(res);
+
+        /*deletefile  -> //(formData={uid:userid,filename:filename}) */
+        // const res = await axios.delete(`http://localhost:5000/api/fileService/file`, {data:{"uid":user,filename:"0c64774e29d7e070fe6e6bbff4a43d7f"}})
         // console.log(res);
     }
 
@@ -216,23 +229,33 @@ class UploadFiles extends React.Component {
     render() {
         // console.log("user:",this.props.authuser)
         if(this.state.didload === true){
-            let listoffiles = this.state.files.map(file => {
-                console.log("filemap: ",)
-                if(file.id){
-                    if (file.isdir === true) {
-                        return (<label style={filelabel}><div style={filediv} draggable="true" onDragStart={this.drag} onDragOver={this.allowDrop} onDrop={this.drop} onClick={this.whenDirClicked} data-id={file.id}>{file.originalname}</div></label>);
-                    }
-                    return (<label style={filelabel}><div style={filediv} draggable="true" onDragStart={this.drag} data-id={file.id}>{file.originalname}</div></label>);
-                }
-            });
-            return (
-                <div ondragover={this.allowDrop} style={allcontainer}>
-                    <div ref={this.element}><Upload {...this.uploaderProps}><a onClick="return false" style={filedrop}>Drop Files and Directories Here</a></Upload></div>
-                    <button type="button" onClick={this.back} className="btn btn-primary">Back</button>
-                    <div style={itemcontainer}>{listoffiles}</div>
-                    <div onClick={this.whenClicked}>click here</div>
-                </div>);
-
+            if (this.state.files && !this.state.files.lengh === 0){
+                console.log("statefiles: ",this.state.files)
+                let listoffiles = this.state.files.map(file => {
+                    // console.log("filemap: ",file)
+                        if(file.id){
+                            if (file.isdir === true) {
+                                return (<label style={filelabel}><div style={filediv} draggable="true" onDragStart={this.drag} onDragOver={this.allowDrop} onDrop={this.drop} onClick={this.whenDirClicked} data-id={file.id}>{file.originalname}</div></label>);
+                            }
+                            return (<label style={filelabel}><div style={filediv} draggable="true" onDragStart={this.drag} data-id={file.id}>{file.originalname}</div></label>);
+                        }
+                });
+                return (
+                    <div ondragover={this.allowDrop} style={allcontainer}>
+                        <div ref={this.element}><Upload {...this.uploaderProps}><a onClick="return false" style={filedrop}>Drop Files and Directories Here</a></Upload></div>
+                        <button type="button" onClick={this.back} className="btn btn-primary">Back</button>
+                        <div style={itemcontainer}>{listoffiles}</div>
+                        <div onClick={this.whenClicked}>click here</div>
+                    </div>);
+            } else {
+                return (
+                    <div ondragover={this.allowDrop} style={allcontainer}>
+                        <div ref={this.element}><Upload {...this.uploaderProps}><a onClick="return false" style={filedrop}>Drop Files and Directories Here</a></Upload></div>
+                        <button type="button" onClick={this.back} className="btn btn-primary">Back</button>
+                        <div style={itemcontainer}>There Are No Files Uploaded</div>
+                        <div onClick={this.whenClicked}>click here</div>
+                    </div>);
+            }
         } else {
             return (
                 <div ondragover={this.allowDrop} style={allcontainer}>
@@ -250,6 +273,27 @@ class UploadFiles extends React.Component {
         // //data-id={file.id} key={file.id}
         // return (
         //     <div ondragover={this.allowDrop} style={allcontainer}>
+        //         <div ref={this.element}><Upload {...this.uploaderProps}><a onClick="return false" style={filedrop}>Drop Files and Directories Here</a></Upload></div>
+        //         <div style={itemcontainer}>{listoffiles}</div>
+        //         <div onClick={this.whenClicked}>click here</div>
+        //     </div>);
+        // let listoffiles = asdf.map(file => {
+        //     if (file.isdir === true) {
+        //         return (<label style={filelabel}><div style={filediv} draggable="true" onDragStart={this.drag} onDragOver={this.allowDrop} onDrop={this.drop} onClick={this.whenDirClicked}>{file.name}</div></label>);
+        //     }
+        //     return (<label style={filelabel}><div style={filediv} draggable="true" onDragStart={this.drag}>{file.name}</div></label>);
+        // });
+        // //data-id={file.id} key={file.id}
+        // return (
+        //     <div ondragover={this.allowDrop} style={allcontainer}>
+        //                 {/* <Nav className="d-md-down-none" navbar> */}
+
+        //                     {/* <NavItem className="px-3" style={{width:'200px'}}> */}
+        //                                     <NavLink block to="/cropper"  style={{width:'200px'}}>
+        //                                         <Button block color="primary" className="px-4" style={{width:'200px', margin:'0 auto'}}>Image Editor</Button>
+        //                                     </NavLink>
+        //                                 {/* </NavItem> */}
+        //                 {/* </Nav> */}
         //         <div ref={this.element}><Upload {...this.uploaderProps}><a onClick="return false" style={filedrop}>Drop Files and Directories Here</a></Upload></div>
         //         <div style={itemcontainer}>{listoffiles}</div>
         //         <div onClick={this.whenClicked}>click here</div>
