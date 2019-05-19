@@ -3,6 +3,9 @@ import ReactDOM from 'react-dom';
 import Upload from 'rc-upload';
 import axios from 'axios';
 import firebase from '../config/firebase';  
+import { Button, } from 'reactstrap';
+import { NavLink } from 'react-router-dom';
+import { Nav, NavItem } from 'reactstrap';
 // import FileIcon, { defaultStyles } from 'react-file-icon';
 
 const asdf = [
@@ -200,6 +203,14 @@ class UploadFiles extends React.Component {
         //data-id={file.id} key={file.id}
         return (
             <div ondragover={this.allowDrop} style={allcontainer}>
+                        {/* <Nav className="d-md-down-none" navbar> */}
+
+                            {/* <NavItem className="px-3" style={{width:'200px'}}> */}
+                                            <NavLink block to="/cropper"  style={{width:'200px'}}>
+                                                <Button block color="primary" className="px-4" style={{width:'200px', margin:'0 auto'}}>Image Editor</Button>
+                                            </NavLink>
+                                        {/* </NavItem> */}
+                        {/* </Nav> */}
                 <div ref={this.element}><Upload {...this.uploaderProps}><a onClick="return false" style={filedrop}>Drop Files and Directories Here</a></Upload></div>
                 <div style={itemcontainer}>{listoffiles}</div>
                 <div onClick={this.whenClicked}>click here</div>
