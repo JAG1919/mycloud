@@ -259,7 +259,11 @@ let exportedmethod ={
                     if(file.children[i]==null)
                         continue;
                     console.log("Child :",file.children[i]);
+<<<<<<< HEAD
                     let we = null;
+=======
+                    // let we = null;
+>>>>>>> dev1
                     // if (file.filename == "rc-root"){
                     //     we = await fileCollection.findOne( { filename: file.children[i][0], userId:userid } );
                     // } else {
