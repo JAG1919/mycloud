@@ -2,6 +2,9 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Upload from 'rc-upload';
 import axios from 'axios';
+import { NavLink } from 'react-router-dom';
+import { Nav, NavItem } from 'reactstrap';
+import { Button, } from 'reactstrap';
 import firebase from '../config/firebase';  
 // import FileIcon, { defaultStyles } from 'react-file-icon';
 
@@ -197,8 +200,8 @@ class UploadFiles extends React.Component {
     whenClicked = async(e) => {
         let user = firebase.auth().currentUser.uid;
 
-        // const res = await axios.post(`http://localhost:5000/api/fileService/registerroot`, {"uid": user});
-        // console.log(res.status);
+        const res = await axios.post(`http://localhost:5000/api/fileService/registerroot`, {"uid": user});
+        console.log(res.status);
 
         // const res = await axios.post(`http://localhost:5000/api/fileService/files`, {"userid":user,filename:"228c8465-8a8d-49a4-b61b-ceed2cca31ed"});
         // console.log("res: ",res);
@@ -237,16 +240,15 @@ class UploadFiles extends React.Component {
     render() {
         // console.log("user:",this.props.authuser)
         if(this.state.didload === true){
-            console.log("statefiles: ",this.state.files)
-            console.log("ifaccepted: ",this.state.files.length)
-            console.log("istrue: ",!this.state.files.lengh === 0)
-            if (!(this.state.files.lengh === 0)){
+
+            if (!(this.state.files.length === 0)){
                 console.log("statefiles1: ",this.state.files)
                 let listoffiles = this.state.files.map(file => {
                     // console.log("filemap: ",file)
                         if(!(file === null)){
                             if (file.isdir === true) {
-                                return (<label style={filelabel}><div style={filediv} draggable="true" onDragStart={this.drag} onDragOver={this.allowDrop} onDrop={this.drop} onClick={this.whenDirClicked} data-id={file.id}>{file.originalname}</div></label>);
+                                return (<label style={filelabel}><div style={filediv} draggable="true" onDragStart={this.drag} onDragOver={this.allowDrop} onDrop={this.drop} onClick={this.whenDirClicked} data-id={file.id}>{file.originalname}</div></label>
+                                );
                             }
                             return (<label style={filelabel}><div style={filediv} draggable="true" onDragStart={this.drag} data-id={file.id}>{file.originalname}</div></label>);
                         }
@@ -254,6 +256,9 @@ class UploadFiles extends React.Component {
                 return (
                     <div ondragover={this.allowDrop} style={allcontainer}>
                         <div ref={this.element}><Upload {...this.uploaderProps}><a onClick="return false" style={filedrop}>Drop Files and Directories Here</a></Upload></div>
+                        <NavLink block to="/cropper"  style={{width:'200px'}}>
+                            <Button block color="primary" className="px-4" style={{width:'200px', margin:'0 auto'}}>Image Editor</Button>
+                        </NavLink>
                         <button type="button" onClick={this.back} className="btn btn-primary">Back</button>
                         <div style={itemcontainer}>{listoffiles}</div>
                         <div onClick={this.whenClicked}>click here</div>
@@ -262,6 +267,9 @@ class UploadFiles extends React.Component {
                 return (
                     <div ondragover={this.allowDrop} style={allcontainer}>
                         <div ref={this.element}><Upload {...this.uploaderProps}><a onClick="return false" style={filedrop}>Drop Files and Directories Here</a></Upload></div>
+                        <NavLink block to="/cropper"  style={{width:'200px'}}>
+                            <Button block color="primary" className="px-4" style={{width:'200px', margin:'0 auto'}}>Image Editor</Button>
+                        </NavLink>
                         <button type="button" onClick={this.back} className="btn btn-primary">Back</button>
                         <div style={itemcontainer}>There Are No Files Uploaded</div>
                         <div onClick={this.whenClicked}>click here</div>
@@ -271,9 +279,13 @@ class UploadFiles extends React.Component {
             return (
                 <div ondragover={this.allowDrop} style={allcontainer}>
                     <div ref={this.element}><Upload {...this.uploaderProps}><a onClick="return false" style={filedrop}>Drop Files and Directories Here</a></Upload></div>
-                    <div style={itemcontainer}></div>
+                    <NavLink block to="/cropper"  style={{width:'200px'}}>
+                        <Button block color="primary" className="px-4" style={{width:'200px', margin:'0 auto'}}>Image Editor</Button>
+                    </NavLink>
+                    <button type="button" onClick={this.back} className="btn btn-primary">Back</button>
+                    <div style={itemcontainer}>There Are No Files Uploaded</div>
                     <div onClick={this.whenClicked}>click here</div>
-                </div>);
+                </div>);;
         }
         // let listoffiles = this.state.files.map(file => {
         //     if (file.isdir === true) {
@@ -300,9 +312,9 @@ class UploadFiles extends React.Component {
         //                 {/* <Nav className="d-md-down-none" navbar> */}
 
         //                     {/* <NavItem className="px-3" style={{width:'200px'}}> */}
-        //                                     <NavLink block to="/cropper"  style={{width:'200px'}}>
-        //                                         <Button block color="primary" className="px-4" style={{width:'200px', margin:'0 auto'}}>Image Editor</Button>
-        //                                     </NavLink>
+                                            // <NavLink block to="/cropper"  style={{width:'200px'}}>
+                                            //     <Button block color="primary" className="px-4" style={{width:'200px', margin:'0 auto'}}>Image Editor</Button>
+                                            // </NavLink>
         //                                 {/* </NavItem> */}
         //                 {/* </Nav> */}
         //         <div ref={this.element}><Upload {...this.uploaderProps}><a onClick="return false" style={filedrop}>Drop Files and Directories Here</a></Upload></div>
