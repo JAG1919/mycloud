@@ -81,11 +81,13 @@ class UploadFiles extends React.Component {
             files: [],
             user:'',
             didload: false,
+            currentDir:"rc-root",
+            path: '',
         }
         this.element = React.createRef();
         // this.traverseFileTree = this.traverseFileTree.bind(this);
+        // this.uploaderProps = this.uploaderProps.bind(this);
         this.myRef = React.createRef();
-        this.parent = "";
         this.uploaderProps = {
             action: '/api/fileService/file',
             multiple: true,
@@ -94,60 +96,64 @@ class UploadFiles extends React.Component {
             //   },
             directory: true,
 
-            // onSuccess(result, file, xhr) {
-            //     console.log("asdfasfasfasdfasdgssg")
-            //     console.log("file: ",file);
-            //     console.log("xhr: ",xhr);
-            //     console.log("result: ",result);
+            onSuccess(result, file, xhr) {
+                console.log("file: ",file);
+                // console.log("xhr: ",xhr);
+                // console.log("result: ",result);
+                // console.log("currentdir: ",this.currentDir)
+                // console.log("onsuccess: ", this.state.user)
+                // const res = axios.post(`http://localhost:5000/api/fileService/files`, {"userid":this.state.user,filename:this.currentDir});
+                // console.log("res: ",res);
+                // console.log(res.status);
+            },
+            // customRequest: async ({
+            //     action,
+            //     data,
+            //     file,
+            //     filename,
+            //     headers,
+            //     onError,
+            //     onProgress,
+            //     onSuccess,
+            //     withCredentials,
+            // }) => {
+            //     // console.log("data:", data)
+            //     // console.log("filename: ",filename)
+            //     // console.log("file:", file)
+            //     // console.log("filename:", file)
+            //     //console.log("path: ",path)
+            //     // const formData = new FormData();
+            //     // formData.append("relativePath", file['webkitRelativePath'])
+            //     // formData.append("userid", 123)
+            //     // formData.append(filename, file);
+            //     // console.log(formData);
+            //     // const res = await axios.post(`http://localhost:5000${action}`, formData);
+            //     // console.log(res.status)
             // },
-            customRequest: async ({
-                action,
-                data,
-                file,
-                filename,
-                headers,
-                onError,
-                onProgress,
-                onSuccess,
-                withCredentials,
-            }) => {
-                // console.log("data:", data)
-                // console.log("filename: ",filename)
-                // console.log("file:", file)
-                // console.log("filename:", file)
-                //console.log("path: ",path)
-                // const formData = new FormData();
-                // formData.append("relativePath", file['webkitRelativePath'])
-                // formData.append("userid", 123)
-                // formData.append(filename, file);
-                // console.log(formData);
-                // const res = await axios.post(`http://localhost:5000${action}`, formData);
-                // console.log(res.status)
-            },
-            beforeUpload(file) {
-                console.log(file);
-                console.log('beforeUpload', file.name + "1");
-            },
-            onStart: (file) => {
-                console.log(file.isDirectory);
-                console.log('onStart', file);
-                // this.refs.inner.abort(file);
-            },
-            onProgress(step, file) {
-                // console.log('onProgress', Math.round(step.percent), file.name);
-            },
-            onSuccess:(file) => {
-                console.log("kjsdhflksdf")
-                console.log('onSuccess', file);
-            },
-            onError(err) {
-                console.log('onError', err);
-            },
-            onChange(file) {
-                  console.log('onChange', file.isDirectory);
-            }
+            // beforeUpload(file) {
+            //     console.log(file);
+            //     console.log('beforeUpload', file.name + "1");
+            // },
+            // onStart: (file) => {
+            //     console.log(file.isDirectory);
+            //     console.log('onStart', file);
+            //     // this.refs.inner.abort(file);
+            // },
+            // onProgress(step, file) {
+            //     // console.log('onProgress', Math.round(step.percent), file.name);
+            // },
+            // onSuccess(){
+            //     console.log("OnSuccess")
+            // },
+            // onError(err) {
+            //     console.log('onError', err);
+            // },
+            // onChange(file) {
+            //       console.log('onChange', file.isDirectory);
+            // }
         };
     }
+
 
     drag = (ev) => {
         console.log(ev.target)
@@ -171,6 +177,7 @@ class UploadFiles extends React.Component {
     }
 
     back = (e) => {
+        console.log(e.target)
         if(this.parent){
             // this.setState
         }else {
@@ -183,7 +190,8 @@ class UploadFiles extends React.Component {
         const dirId = e.target.dataset.id;
         const children = await axios.post(`http://localhost:5000/api/fileService/files`, {"userid":this.state.user,filename:dirId});
         console.log("children: ",children)
-        this.setState({files: children.data})
+        const currentDirectory = this.state.currentDir;
+        this.setState({files: children.data, currentDir: dirId, parent: currentDirectory})
     }
 
     whenClicked = async(e) => {
@@ -192,32 +200,26 @@ class UploadFiles extends React.Component {
         // const res = await axios.post(`http://localhost:5000/api/fileService/registerroot`, {"uid": user});
         // console.log(res.status);
 
-<<<<<<< HEAD
-        const res = await axios.post(`http://localhost:5000/api/fileService/files`, {"userid":user,filename:"228c8465-8a8d-49a4-b61b-ceed2cca31ed"});
-        console.log("res: ",res);
-        console.log(res.status);
-=======
-        const res = await axios.post(`http://localhost:5000/api/fileService/files`, {"userid":user,filename:"rc-root"});
-        console.log("res: ",res);
+        // const res = await axios.post(`http://localhost:5000/api/fileService/files`, {"userid":user,filename:"228c8465-8a8d-49a4-b61b-ceed2cca31ed"});
+        // console.log("res: ",res);
+        // console.log(res.status);
+        // const res = await axios.post(`http://localhost:5000/api/fileService/files`, {"userid":user,filename:"rc-root"});
+        // console.log("res: ",res);
         // console.log(res.status);
         // console.log("asdfasdf")
         // const res = await axios.post(`http://localhost:5000/api/fileService/files`, {"userid":user,filename:"rc-root"});
         // console.log("res: ",res);
         // console.log(res.status);
->>>>>>> dev1
 
         // console.log("userstate: ", this.state.user);
         // console.log("filesstate: ",this.state.files)
         // this.setState({files: ["asdf"]})
         // const res = await axios.post(`http://localhost:5000/api/fileService/move`, {"userid":user,filename:"4c9a4661e13241583c9c010f30da92a3",fromfile:"e75de63e-374c-4c6d-ab7c-2eabe8eba6e9",tofile:"a9df2739-ce41-49c2-baf6-3086e2dba300"})
         // console.log(res);
-<<<<<<< HEAD
-=======
 
         /*deletefile  -> //(formData={uid:userid,filename:filename}) */
         // const res = await axios.delete(`http://localhost:5000/api/fileService/file`, {data:{"uid":user,filename:"0c64774e29d7e070fe6e6bbff4a43d7f"}})
         // console.log(res);
->>>>>>> dev1
     }
 
     componentDidUpdate = async() => {
@@ -226,7 +228,7 @@ class UploadFiles extends React.Component {
             const newfiles = await axios.post(`http://localhost:5000/api/fileService/files`, {"userid":user,filename:"rc-root"});
             this.setState({user: user, files: newfiles.data, didload: true});
         } else {
-
+            // console.log("kjlshdfkjlsldfsd")
         }
         // console.log(this.user)
         // console.log(res.status);
@@ -235,30 +237,14 @@ class UploadFiles extends React.Component {
     render() {
         // console.log("user:",this.props.authuser)
         if(this.state.didload === true){
-<<<<<<< HEAD
-            let listoffiles = this.state.files.map(file => {
-                console.log("filemap: ",)
-                if(file.id){
-                    if (file.isdir === true) {
-                        return (<label style={filelabel}><div style={filediv} draggable="true" onDragStart={this.drag} onDragOver={this.allowDrop} onDrop={this.drop} onClick={this.whenDirClicked} data-id={file.id}>{file.originalname}</div></label>);
-                    }
-                    return (<label style={filelabel}><div style={filediv} draggable="true" onDragStart={this.drag} data-id={file.id}>{file.originalname}</div></label>);
-                }
-            });
-            return (
-                <div ondragover={this.allowDrop} style={allcontainer}>
-                    <div ref={this.element}><Upload {...this.uploaderProps}><a onClick="return false" style={filedrop}>Drop Files and Directories Here</a></Upload></div>
-                    <button type="button" onClick={this.back} className="btn btn-primary">Back</button>
-                    <div style={itemcontainer}>{listoffiles}</div>
-                    <div onClick={this.whenClicked}>click here</div>
-                </div>);
-
-=======
-            if (this.state.files && !this.state.files.lengh === 0){
-                console.log("statefiles: ",this.state.files)
+            console.log("statefiles: ",this.state.files)
+            console.log("ifaccepted: ",this.state.files.length)
+            console.log("istrue: ",!this.state.files.lengh === 0)
+            if (!(this.state.files.lengh === 0)){
+                console.log("statefiles1: ",this.state.files)
                 let listoffiles = this.state.files.map(file => {
                     // console.log("filemap: ",file)
-                        if(file.id){
+                        if(!(file === null)){
                             if (file.isdir === true) {
                                 return (<label style={filelabel}><div style={filediv} draggable="true" onDragStart={this.drag} onDragOver={this.allowDrop} onDrop={this.drop} onClick={this.whenDirClicked} data-id={file.id}>{file.originalname}</div></label>);
                             }
@@ -281,7 +267,6 @@ class UploadFiles extends React.Component {
                         <div onClick={this.whenClicked}>click here</div>
                     </div>);
             }
->>>>>>> dev1
         } else {
             return (
                 <div ondragover={this.allowDrop} style={allcontainer}>
@@ -303,8 +288,6 @@ class UploadFiles extends React.Component {
         //         <div style={itemcontainer}>{listoffiles}</div>
         //         <div onClick={this.whenClicked}>click here</div>
         //     </div>);
-<<<<<<< HEAD
-=======
         // let listoffiles = asdf.map(file => {
         //     if (file.isdir === true) {
         //         return (<label style={filelabel}><div style={filediv} draggable="true" onDragStart={this.drag} onDragOver={this.allowDrop} onDrop={this.drop} onClick={this.whenDirClicked}>{file.name}</div></label>);
@@ -326,7 +309,6 @@ class UploadFiles extends React.Component {
         //         <div style={itemcontainer}>{listoffiles}</div>
         //         <div onClick={this.whenClicked}>click here</div>
         //     </div>);
->>>>>>> dev1
     }
     componentDidMount = async () => {
         // let user = firebase.auth().currentUser.uid;
@@ -363,11 +345,10 @@ class UploadFiles extends React.Component {
         if (item.isFile) {
             // Get file
             let filepath = null;
-            item.file(function(file) {
+            item.file(async(file) => {
                 let action = '/api/fileService/file';
                 filepath = path + file.name;
-                console.log("File:", path + file.name);
-                console.log("File2:", file);
+                // console.log("File:", path + file.name);
                 const formData = new FormData();
                 formData.append("userid", user);
                 if (!path){
@@ -376,8 +357,14 @@ class UploadFiles extends React.Component {
                     formData.append("path", filepath);
                 }
                 formData.append("file", file);
-                const res = axios.post(`http://localhost:5000${action}`, formData);
-                console.log(res.status)
+                const res = await axios.post(`http://localhost:5000${action}`, formData);
+                // console.log("resstatus: ",res.status)
+                if(res.status === 200){
+                    console.log("curdir: ",this.state.currentDir)
+                    const newfilelist = await axios.post(`http://localhost:5000/api/fileService/files`, {"userid":this.state.user,"filename": this.state.currentDir});
+                    console.log("newlist: ", newfilelist)
+                    this.setState({files: newfilelist.data})
+                }
             });
         } else if (item.isDirectory) {
           // Get folder contents
