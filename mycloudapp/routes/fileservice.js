@@ -15,7 +15,7 @@ let versioncontrol = (req,res,next)=>
 }
 
 
-router.post("/file", upload.array('file'), async (req, res) => {
+router.post("/file", upload.array('file'), versioncontrol, async (req, res) => {
     
     const asdf = req.body;
     
@@ -28,13 +28,14 @@ router.post("/file", upload.array('file'), async (req, res) => {
     files.postfile(req.files,req.body.path,req.body.userid);
     // try to save all information into redis here:
     // make client on first
-    // let client = await getRedis();
-    // client.on('connect',(req,res)=>{
-    //     console.log("Redis Connected");
-    // })
+    let client = await getRedis();
+    client.on('connect',(req,res)=>{
+        console.log("Redis Connected");
+    })
     // then push parameters into redis: key->id; value->req.body.path(change this to what u want to 
     // save here as the 2nd arguments:fileName,children,parent or filepath)
     // client.hmset(req.body.userid,req.body.path)
+    client.hmset("User Details", {"Id":req.body.userid, "FilePath": req.body.path})
 
     }catch(e)
     {

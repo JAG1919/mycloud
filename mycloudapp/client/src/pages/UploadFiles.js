@@ -3,6 +3,9 @@ import ReactDOM from 'react-dom';
 import Upload from 'rc-upload';
 import axios from 'axios';
 import firebase from '../config/firebase';  
+import { NavLink } from 'react-router-dom';
+import { Nav, NavItem } from 'reactstrap';
+import { Button, } from 'reactstrap';
 // import FileIcon, { defaultStyles } from 'react-file-icon';
 
 const asdf = [
@@ -82,7 +85,7 @@ class UploadFiles extends React.Component {
             user:'',
             didload: false,
             currentDir:"rc-root",
-            path: '',
+            parents: [],
         }
         this.element = React.createRef();
         // this.traverseFileTree = this.traverseFileTree.bind(this);
@@ -176,7 +179,11 @@ class UploadFiles extends React.Component {
         console.log(e)
     }
 
-    back = (e) => {
+    back = async(e) => {
+        let par = this.state.parents;
+        let parent = par.pop();
+        await axios.post(`http://localhost:5000/api/fileService/files`, {"userid":this.state.user,filename:parent})
+        this.setState()
         console.log(e.target)
         if(this.parent){
             // this.setState
@@ -191,7 +198,9 @@ class UploadFiles extends React.Component {
         const children = await axios.post(`http://localhost:5000/api/fileService/files`, {"userid":this.state.user,filename:dirId});
         console.log("children: ",children)
         const currentDirectory = this.state.currentDir;
-        this.setState({files: children.data, currentDir: dirId, parent: currentDirectory})
+        const par = this.state.parents;
+        par.push(currentDirectory);
+        this.setState({files: children.data, currentDir: dirId, parent: par})
     }
 
     whenClicked = async(e) => {
@@ -257,6 +266,13 @@ class UploadFiles extends React.Component {
                         <button type="button" onClick={this.back} className="btn btn-primary">Back</button>
                         <div style={itemcontainer}>{listoffiles}</div>
                         <div onClick={this.whenClicked}>click here</div>
+                        <Nav className="d-md-down-none" navbar>
+                        <NavItem className="px-3" style={{width:'200px'}}>
+                            <NavLink block to="/cropper"  style={{width:'200px'}}>
+                                <Button block color="primary" className="px-4" style={{width:'200px', margin:'0 auto'}}>Image Editor</Button>
+                            </NavLink>
+                        </NavItem>
+                    </Nav>
                     </div>);
             } else {
                 return (
@@ -265,6 +281,13 @@ class UploadFiles extends React.Component {
                         <button type="button" onClick={this.back} className="btn btn-primary">Back</button>
                         <div style={itemcontainer}>There Are No Files Uploaded</div>
                         <div onClick={this.whenClicked}>click here</div>
+                        <Nav className="d-md-down-none" navbar>
+                        <NavItem className="px-3" style={{width:'200px'}}>
+                            <NavLink block to="/cropper"  style={{width:'200px'}}>
+                                <Button block color="primary" className="px-4" style={{width:'200px', margin:'0 auto'}}>Image Editor</Button>
+                            </NavLink>
+                        </NavItem>
+                    </Nav>
                     </div>);
             }
         } else {
@@ -273,6 +296,13 @@ class UploadFiles extends React.Component {
                     <div ref={this.element}><Upload {...this.uploaderProps}><a onClick="return false" style={filedrop}>Drop Files and Directories Here</a></Upload></div>
                     <div style={itemcontainer}></div>
                     <div onClick={this.whenClicked}>click here</div>
+                    <Nav className="d-md-down-none" navbar>
+                        <NavItem className="px-3" style={{width:'200px'}}>
+                            <NavLink block to="/cropper"  style={{width:'200px'}}>
+                                <Button block color="primary" className="px-4" style={{width:'200px', margin:'0 auto'}}>Image Editor</Button>
+                            </NavLink>
+                        </NavItem>
+                    </Nav>
                 </div>);
         }
         // let listoffiles = this.state.files.map(file => {
