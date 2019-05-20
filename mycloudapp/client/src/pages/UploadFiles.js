@@ -6,6 +6,9 @@ import { NavLink } from 'react-router-dom';
 import { Nav, NavItem } from 'reactstrap';
 import { Button, } from 'reactstrap';
 import firebase from '../config/firebase';  
+import { NavLink } from 'react-router-dom';
+import { Nav, NavItem } from 'reactstrap';
+import { Button, } from 'reactstrap';
 // import FileIcon, { defaultStyles } from 'react-file-icon';
 
 const asdf = [
@@ -85,7 +88,7 @@ class UploadFiles extends React.Component {
             user:'',
             didload: false,
             currentDir:"rc-root",
-            path: '',
+            parents: [],
         }
         this.element = React.createRef();
         // this.traverseFileTree = this.traverseFileTree.bind(this);
@@ -179,7 +182,11 @@ class UploadFiles extends React.Component {
         console.log(e)
     }
 
-    back = (e) => {
+    back = async(e) => {
+        let par = this.state.parents;
+        let parent = par.pop();
+        await axios.post(`http://localhost:5000/api/fileService/files`, {"userid":this.state.user,filename:parent})
+        this.setState()
         console.log(e.target)
         if(this.parent){
             // this.setState
@@ -194,14 +201,16 @@ class UploadFiles extends React.Component {
         const children = await axios.post(`http://localhost:5000/api/fileService/files`, {"userid":this.state.user,filename:dirId});
         console.log("children: ",children)
         const currentDirectory = this.state.currentDir;
-        this.setState({files: children.data, currentDir: dirId, parent: currentDirectory})
+        const par = this.state.parents;
+        par.push(currentDirectory);
+        this.setState({files: children.data, currentDir: dirId, parent: par})
     }
 
     whenClicked = async(e) => {
         let user = firebase.auth().currentUser.uid;
 
         const res = await axios.post(`http://localhost:5000/api/fileService/registerroot`, {"uid": user});
-        console.log(res.status);
+        // console.log(res.status);
 
         // const res = await axios.post(`http://localhost:5000/api/fileService/files`, {"userid":user,filename:"228c8465-8a8d-49a4-b61b-ceed2cca31ed"});
         // console.log("res: ",res);
@@ -229,6 +238,7 @@ class UploadFiles extends React.Component {
         if(this.state.didload === !true){
             const user = firebase.auth().currentUser.uid;
             const newfiles = await axios.post(`http://localhost:5000/api/fileService/files`, {"userid":user,filename:"rc-root"});
+            console.log("asdf: ",newfiles)
             this.setState({user: user, files: newfiles.data, didload: true});
         } else {
             // console.log("kjlshdfkjlsldfsd")
@@ -240,7 +250,9 @@ class UploadFiles extends React.Component {
     render() {
         // console.log("user:",this.props.authuser)
         if(this.state.didload === true){
-
+            console.log("statefiles: ",this.state.files)
+            console.log("ifaccepted: ",this.state.files.length)
+            console.log("istrue: ",!this.state.files.lengh === 0)
             if (!(this.state.files.length === 0)){
                 console.log("statefiles1: ",this.state.files)
                 let listoffiles = this.state.files.map(file => {
@@ -262,6 +274,13 @@ class UploadFiles extends React.Component {
                         <button type="button" onClick={this.back} className="btn btn-primary">Back</button>
                         <div style={itemcontainer}>{listoffiles}</div>
                         <div onClick={this.whenClicked}>click here</div>
+                        <Nav className="d-md-down-none" navbar>
+                        <NavItem className="px-3" style={{width:'200px'}}>
+                            <NavLink block to="/cropper"  style={{width:'200px'}}>
+                                <Button block color="primary" className="px-4" style={{width:'200px', margin:'0 auto'}}>Image Editor</Button>
+                            </NavLink>
+                        </NavItem>
+                    </Nav>
                     </div>);
             } else {
                 return (
@@ -273,6 +292,13 @@ class UploadFiles extends React.Component {
                         <button type="button" onClick={this.back} className="btn btn-primary">Back</button>
                         <div style={itemcontainer}>There Are No Files Uploaded</div>
                         <div onClick={this.whenClicked}>click here</div>
+                        <Nav className="d-md-down-none" navbar>
+                        <NavItem className="px-3" style={{width:'200px'}}>
+                            <NavLink block to="/cropper"  style={{width:'200px'}}>
+                                <Button block color="primary" className="px-4" style={{width:'200px', margin:'0 auto'}}>Image Editor</Button>
+                            </NavLink>
+                        </NavItem>
+                    </Nav>
                     </div>);
             }
         } else {
@@ -285,7 +311,14 @@ class UploadFiles extends React.Component {
                     <button type="button" onClick={this.back} className="btn btn-primary">Back</button>
                     <div style={itemcontainer}>There Are No Files Uploaded</div>
                     <div onClick={this.whenClicked}>click here</div>
-                </div>);;
+                    <Nav className="d-md-down-none" navbar>
+                        <NavItem className="px-3" style={{width:'200px'}}>
+                            <NavLink block to="/cropper"  style={{width:'200px'}}>
+                                <Button block color="primary" className="px-4" style={{width:'200px', margin:'0 auto'}}>Image Editor</Button>
+                            </NavLink>
+                        </NavItem>
+                    </Nav>
+                </div>);
         }
         // let listoffiles = this.state.files.map(file => {
         //     if (file.isdir === true) {

@@ -15,7 +15,7 @@ let versioncontrol = (req,res,next)=>
 }
 
 
-router.post("/file", upload.array('file'),versioncontrol, async (req, res) => {
+router.post("/file", upload.array('file'), versioncontrol, async (req, res) => {
     
     const asdf = req.body;
     
@@ -34,7 +34,8 @@ router.post("/file", upload.array('file'),versioncontrol, async (req, res) => {
     })
     // then push parameters into redis: key->id; value->req.body.path(change this to what u want to 
     // save here as the 2nd arguments:fileName,children,parent or filepath)
-    client.hmset("User Details",{"Id":req.body.userid,"FilePath":req.body.path});
+    // client.hmset(req.body.userid,req.body.path)
+    client.hmset("User Details", {"Id":req.body.userid, "FilePath": req.body.path})
 
     }catch(e)
     {
