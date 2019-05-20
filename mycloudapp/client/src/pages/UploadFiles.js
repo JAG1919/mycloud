@@ -206,7 +206,7 @@ class UploadFiles extends React.Component {
     whenClicked = async(e) => {
         let user = firebase.auth().currentUser.uid;
 
-        // const res = await axios.post(`http://localhost:5000/api/fileService/registerroot`, {"uid": user});
+        const res = await axios.post(`http://localhost:5000/api/fileService/registerroot`, {"uid": user});
         // console.log(res.status);
 
         // const res = await axios.post(`http://localhost:5000/api/fileService/files`, {"userid":user,filename:"228c8465-8a8d-49a4-b61b-ceed2cca31ed"});
@@ -235,6 +235,7 @@ class UploadFiles extends React.Component {
         if(this.state.didload === !true){
             const user = firebase.auth().currentUser.uid;
             const newfiles = await axios.post(`http://localhost:5000/api/fileService/files`, {"userid":user,filename:"rc-root"});
+            console.log("asdf: ",newfiles)
             this.setState({user: user, files: newfiles.data, didload: true});
         } else {
             // console.log("kjlshdfkjlsldfsd")
@@ -249,7 +250,7 @@ class UploadFiles extends React.Component {
             console.log("statefiles: ",this.state.files)
             console.log("ifaccepted: ",this.state.files.length)
             console.log("istrue: ",!this.state.files.lengh === 0)
-            if (!(this.state.files.lengh === 0)){
+            if (!(this.state.files.length === 0)){
                 console.log("statefiles1: ",this.state.files)
                 let listoffiles = this.state.files.map(file => {
                     // console.log("filemap: ",file)
